@@ -30,7 +30,6 @@ Nazov firmy: MIBA Steeltec
     - nastavenie stroja clovek - 10 min
     - brusenie - 10 sekund
     - polozenie na paletu (kapacita: 10000 kusov)
-    - kontrola kvality (% prejde) -----> ZBYTOCNE medzioperacna kontrola byva na konci vyroby
 - vyrovnanie cool flattening
     - nastavenie na hrubku - 10 min
     - 10 sekund
