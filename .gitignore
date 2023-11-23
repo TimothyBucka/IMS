@@ -1,3 +1,7 @@
+simlib
+.vscode
+SimProgram
+
 # Prerequisites
 *.d
 
