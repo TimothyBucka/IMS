@@ -92,7 +92,6 @@ material_warehouse warehouse("Material warehouse", 10000, 5000);
 // Facility double_sided_sander("Sander machine (both sides)");
 // Facility oiling_machine("Oiling machine");
 // Facility packing("Packing brake disks to the boxes");
-// // ##### BIG NOT SURE ABOUT IT TODO: ... #####
 // Facility transport("Transporting brake disks to the another facility");
 
 //----------------------------------------------- PROCESSES -----------------------------------------------
@@ -159,19 +158,33 @@ public:
 
     void Behavior()
     {
-        //TODO: THIS AS FIRST THING #################################
-       // Seize(*machine_maintained); // seize the machine for the maintenance
-      //  Wait(Normal(maintenance_time[machine_maintained->type][0], maintenance_time[machine_maintained->type][1]));
-       // Release(*machine_maintained); // release the machine after the maintenance
+        // TODO: THIS AS FIRST THING #################################
+        Wait(Normal(maintenance_time[machine_maintained->type][0], maintenance_time[machine_maintained->type][1]));
+        // Seize(*machine_maintained); // seize the machine for the maintenance
+        //  Wait(Normal(maintenance_time[machine_maintained->type][0], maintenance_time[machine_maintained->type][1]));
+        // Release(*machine_maintained); // release the machine after the maintenance
 
         return;
     }
-
 };
 
 //----------------------------------------------- EVENTS -----------------------------------------------
 
-//---------- Generator for new orders ----------
+// ########## Event for the maintenance ##########
+class maintenance_event : public Event
+{
+private:
+    machine *machines; // pointer to the machines
+
+public:
+    void Behavior()
+    {
+        (new maintenance(machines))->Activate(); // activate the maintenance process
+        Activate(Time + 8 * 60 * 60); // schedule the next maintenance event after 8 hours
+    }
+};
+
+// ########## Generator for new orders ##########
 class OrderGen : public Event
 {
 
@@ -209,3 +222,6 @@ int main(int argc, char *argv[])
 
     return ErrCode(SUCCESS);
 }
+
+
+// ended at Many fixes + machine_maintenance & machine classes added. Removed pre…

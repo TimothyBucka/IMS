@@ -28,6 +28,9 @@ enum machine_types
     transport
 };
 
+// 8 hours 
+const int maintenance_event_generated = 8 * 60 * 60; // 8 hours in seconds
+
 double maintenance_time[][2] = {
     // first value is the time for the maintenance, second is the dispersion +- 5 minutes or more 
     {40, 5}, // pressing machine
