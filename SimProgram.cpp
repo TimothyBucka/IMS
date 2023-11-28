@@ -2,225 +2,180 @@
 
 using namespace std;
 
-void help(const char *prog_name) {
-    cout << prog_name << " program implements the SHO of the engineering company." << endl;
-    cout << "Subject: IMS" << endl;
-    cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
-    cout << "          Adam Pap (xpapad11) " << endl;
-    cout << "Contacts: xbucka00@stud.fit.vutbr.cz " << endl;
-    cout << "          xpapad11@stud.fit.vutbr.cz " << endl;
-}
+// ------------------------------------------------------------------------------------------------------- //
+//----------------------------------------------- GLOBALS ----------------------------------------------- //
+// ------------------------------------------------------------------------------------------------------ //
 
-//----------------------------------------------- QUEUES -----------------------------------------------
-
+// ########## GLOBAL WAREHOUSE FOR MATERIAL ##########
+unsigned order_id_count = 0;
+// ########## MACHINES ##########
+machine pressing_machine(maintenance_time[0][0], "Pressing machine");
+machine one_sided_sander(maintenance_time[1][0], "One sided sander");
+machine aligner(maintenance_time[2][0], "Aligner");
+machine stretcher(maintenance_time[3][0], "Stretcher");
+machine double_sided_sander(maintenance_time[4][0], "Double sided sander");
+machine oiling_machine(maintenance_time[5][0], "Oiling machine");
+machine *machines[6];
 // ########## Queue for orders ##########
 Queue orders("Brake discs order:");
+
+material_warehouse warehouse("Material warehouse", (float)MATERIAL_WAREHOUSE_CAPACITY, (float)INITIAL_MATERIAL_WAREHOUSE_WEIGHT);
+
+// ------------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------- CLASSES ----------------------------------------------- //
+// ------------------------------------------------------------------------------------------------------- //
 
 //----------------------------------------------- FACILITIES -----------------------------------------------
 
 // ########## Material warehouse ##########
-class material_warehouse : public Facility {
-private:
-    float max_capacity;
-    float current_capacity;
+material_warehouse::material_warehouse(string desc, float max_capacity, float current_capacity) : Facility() {
+    this->max = max_capacity;
+    this->current = current_capacity;
+}
 
-public:
-    float get_current_capacity() { return this->current_capacity; }
+float material_warehouse::get_current() { return this->current; }
 
-    material_warehouse(const char *desc, float max_capacity, float current_capacity) : Facility() {
-        this->max_capacity = max_capacity;
-        this->current_capacity = current_capacity;
+bool material_warehouse::add_material(float amount) {
+    if (this->current + amount > this->max) {
+        // cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl; // TODO: ...
+        this->current = this->max;
+        return false;
     }
 
-    // send material every 24 hours and add it to the current warehouse capacity
-    bool add_material(unsigned amount) {
-        if (this->current_capacity + amount > this->max_capacity)
-        {
-            cout << "WAREHOUSE: warehouse full - " << this->current_capacity + amount - this->max_capacity << " kg not added" << endl; // TODO: ...
-            this->current_capacity = this->max_capacity;
-            return false;
-        }
+    this->current += amount; // increase the capacity of the warehouse by the amount of material
 
-        this->current_capacity += amount; // increase the capacity of the warehouse by the amount of material
+    return true;
+}
 
-        return true;
+bool material_warehouse::use_material(float amount) {
+    if (amount > this->current) // chceck if the amount is not bigger than the capacity
+    {
+        // cout << "WAREHOUSE: amount of material is bigger than amount in wh" << endl; // TODO: ...
+        return false;
     }
+    this->current -= amount; // decrease the capacity of the warehouse by the amount of material
 
-    bool use_material(float amount) {
-        if (amount > this->current_capacity) // chceck if the amount is not bigger than the capacity
-        {
-            cout << "WAREHOUSE: amount of material is bigger than the capacity" << endl; // TODO: ...
-            return false;
-        }
-        this->current_capacity -= amount; // decrease the capacity of the warehouse by the amount of material
+    float utilization = static_cast<float>(this->current) / static_cast<float>(this->max) * 100;
 
-        float utilization = static_cast<float>(this->current_capacity) / static_cast<float>(this->max_capacity) * 100;
+    // TODO:
 
-        // TODO:
-
-        return true;
-    };
-};
+    return true;
+}
 
 // ########## Machines for producing brake discs ##########
-class machine : public Facility {
+machine::machine(float time, string name) : Facility() {
+    this->maintenance_time = time;
+    this->name = name;
+}
 
-public:
-    enum machine_types type;
+float machine::get_maintenance_time() {
+    return this->maintenance_time;
+}
 
-    // constructor
-    machine(void){}; // TODO: MAYBE NOT NEEDED
-
-    machine(const char *name, enum machine_types type) : Facility(name) {
-        this->type = type;
-
-        return;
-    }
-};
-
-//----------------------------------------------- CONSTANTS, GLOBALS AND DATA STRUCTURES -----------------------------------------------
-
-// ########## GLOBAL WAREHOUSE FOR MATERIAL ##########
-material_warehouse warehouse("Material warehouse", MATERIAL_WAREHOUSE_CAPACITY, INITIAL_MATERIAL_WAREHOUSE_WEIGHT);
-unsigned order_id_count = 0;
-
-// //########## GLOBAL FACILITIES FOR PRODUCING ACTUAL BRAKE DISKS ##########
-// Facility pressing_machine("Pressing machine");
-// Facility one_sided_sander("Sander machine (one side only)");
-// Facility aligner("Aligner machine");
-// Facility stretcher("Stretching machine");
-// Facility float_sided_sander("Sander machine (both sides)");
-// Facility oiling_machine("Oiling machine");
-// Facility packing("Packing brake disks to the boxes");
-// Facility transport("Transporting brake disks to the another facility");
+string machine::get_name() {
+    return this->name;
+}
 
 //----------------------------------------------- PROCESSES -----------------------------------------------
 
-// ########## Simulation proccess for the order ##########
-class Order : public Process {
-private:
-    unsigned order_size;           // number of brake discs in the order
-    float amount_of_material;      // amount of material needed for the order
-    unsigned order_id;             // id of the order
-    Queue *orders;
-    float startTime;
-
-public:
-    // constructor
-    Order() : Process() {
-        this->order_size = static_cast<unsigned>(Uniform(1000, 20000));      // random number of brake discs in the order
-        this->amount_of_material = PIECE_MATERIAL_WEIGHT * this->order_size; // amount of material needed for the order
-    }
-
-    void Behavior() {
-        cout << "Order:" << endl;
-        cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
-        cout << "\tOrder size: " << this->order_size << endl;
-        cout << "\tAmount of material: " << this->amount_of_material << endl;
-        // cout << "Warehouse cap: " << warehouse->get_current_capacity() << endl;
-
-        Wait(SECONDS_IN_MINUTE);
-
-        this->startTime = Time;                          // save the time of order
-
-        this->order_id = order_id_count++;
-
-        if(warehouse.use_material(this->amount_of_material)) {
-
-        } else {
-            // TODO: not enough material
-            cout << "ORDER N." << this->order_id <<": not enough material" << endl;
-            return;
-        }
-        // create new batch
-    }
-};
-
-// ########## Simulation proccess for the new batch of brake discs from the order ##########
-class batch : public Process {
-private:
-    unsigned batch_size;           // number of brake discs in the batch to be made
-    material_warehouse *warehouse; // pointer to the material warehouse
-    Queue *orders;                 // pointer to the queue of orders waiting to be processed
-
-    float startTime; // time of the start of the batch
-
-public:
-    void Behavior() {
-        // TODO:
-    }
-};
-
 // ########## Simulation proccess for the maintenance of the machine ##########
-class maintenance : public Process {
-private:
-    machine *machine_maintained; // pointer to the machine that is being maintained
+maintenance::maintenance(machine *machine) : Process() {
+    this->machine_to_maintain = machine;
+}
 
-public:
-    // constructor
-    maintenance(machine *machine_maintained) : Process() {
-        this->machine_maintained = machine_maintained;
+void maintenance::Behavior() {
+    cout << "\tSTART " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_MINUTE << endl;
+    Seize(*(this->machine_to_maintain));
+    Wait(Normal((this->machine_to_maintain)->get_maintenance_time(), (this->machine_to_maintain)->get_maintenance_time() * 0.1)); // 10% dispersion
+    Release(*(this->machine_to_maintain));
+    cout << "\tEND " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_MINUTE << endl;
+}
 
+// ########## Simulation proccess for the order ##########
+Order::Order() : Process() {
+    this->order_size = static_cast<unsigned>(Uniform(ORDER_SIZE_MIN, ORDER_SIZE_MAX)); // random number of brake discs in the order
+    this->amount_of_material = PIECE_MATERIAL_WEIGHT * this->order_size;               // amount of material needed for the order
+}
+
+void Order::Behavior() {
+    // cout << "Order:" << endl;
+    // cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tOrder size: " << this->order_size << endl;
+    // cout << "\tAmount of material: " << this->amount_of_material << endl;
+
+    Wait(SECONDS_IN_MINUTE);
+
+    this->startTime = Time; // save the time of order
+
+    this->order_id = order_id_count++;
+
+    if (warehouse.use_material(this->amount_of_material)) {
+
+    } else {
+        // TODO: not enough material
+        // cout << "ORDER N." << this->order_id << ": not enough material" << endl;
         return;
     }
 
-    void Behavior() {
-        // TODO: THIS AS FIRST THING #################################
-        Wait(Normal(maintenance_time[machine_maintained->type][0], maintenance_time[machine_maintained->type][1]));
-        // Seize(*machine_maintained); // seize the machine for the maintenance
-        //  Wait(Normal(maintenance_time[machine_maintained->type][0], maintenance_time[machine_maintained->type][1]));
-        // Release(*machine_maintained); // release the machine after the maintenance
+    // create new batch
+}
 
+// ########## Process of supply of material ##########
+void Supply::Behavior() {
+    // cout << "Supply of 5000 " << endl;
+
+    if (warehouse.add_material(MATERIAL_SUPPLY_WEIGHT)) {
+
+    } else {
         return;
     }
-};
-
-class Supply : public Process {
-public:
-    Supply() : Process() {}
-
-    void Behavior() {
-        cout << "Supply of 5000: "<<endl;
-
-        if (warehouse.add_material(MATERIAL_SUPPLY_WEIGHT)) {
-
-        } else {
-            return;
-        }
-    }
-};
-
+}
 
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########## Event for the maintenance ##########
-class maintenance_event : public Event {
-private:
-    machine *machines; // pointer to the machines
+void maintenance_event::Behavior() {
+    Activate(Time + Normal(SECONDS_IN_HOUR * 8, 0)); // schedule the next maintenance event after 8 hours
 
-public:
-    void Behavior() {
-        (new maintenance(machines))->Activate(); // activate the maintenance process
-        Activate(Time + 8 * 60 * 60);            // schedule the next maintenance event after 8 hours
+    for (int i = 0; i < 6; i++) {
+        (new maintenance(machines[i]))->Activate(); // activate the maintenance process for each machine
     }
-};
+
+    cout << "Maintenance event time: " << Time / SECONDS_IN_MINUTE << endl;
+}
 
 // ########## Generator for new orders ##########
-class OrderGen : public Event {
-    // behaviour generates the new orders and activates the Order process
-    void Behavior() {
-        (new Order)->Activate();
-        Activate(Time + Exponential(SECONDS_IN_HOUR * 8)); // order every 8 hours (exponential)
-    }
-};
+void order_event::Behavior() {
+    (new Order)->Activate();
+    Activate(Time + Exponential(SECONDS_IN_HOUR * 8)); // order every 8 hours (exponential)
+}
 
 // ########## Generator for supplies ##########
-class SupplyGen : public Event {
-    void Behavior() {
-        (new Supply)->Activate();
-        Activate(Time + Normal(SECONDS_IN_DAY, SECONDS_IN_HOUR * 2)); // supply every 24 hours (exponential
-    }
-};
+void supply_event::Behavior() {
+    (new Supply)->Activate();
+    Activate(Time + Normal(SECONDS_IN_DAY, SECONDS_IN_HOUR * 2)); // supply every 24 hours (exponential
+}
+
+// --------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------- FUNCS --------------------------------------------- //
+// --------------------------------------------------------------------------------------------------- //
+void fill_machine_array() {
+    machines[0] = &pressing_machine;
+    machines[1] = &one_sided_sander;
+    machines[2] = &aligner;
+    machines[3] = &stretcher;
+    machines[4] = &double_sided_sander;
+    machines[5] = &oiling_machine;
+}
+
+void help(const char *prog_name) {
+    // cout << prog_name << " program implements the SHO of the engineering company." << endl;
+    // cout << "Subject: IMS" << endl;
+    // cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
+    // cout << "          Adam Pap (xpapad11) " << endl;
+    // cout << "Contacts: xbucka00@stud.fit.vutbr.cz " << endl;
+    // cout << "          xpapad11@stud.fit.vutbr.cz " << endl;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -229,18 +184,21 @@ int main(int argc, char *argv[]) {
         help(argv[0]);
     }
 
+    fill_machine_array();
+
     random_device rand;       // a device that produces random numbers
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SECONDS_IN_DAY * 1); // time of simulation
-    (new OrderGen)->Activate();
-    (new SupplyGen)->Activate();
+    Init(0, SECONDS_IN_DAY * 2); // time of simulation
+    (new order_event)->Activate();
+    (new supply_event)->Activate();
+    (new maintenance_event)->Activate();
     Run();
 
     // print out statistics TODO: ...
 
-    cout << "Warehouse cap: " << warehouse.get_current_capacity() << endl;
+    // cout << "Warehouse cap: " << warehouse.get_current() << endl;
 
     return ErrCode(SUCCESS);
 }
