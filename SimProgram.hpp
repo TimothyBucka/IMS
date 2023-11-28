@@ -7,6 +7,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <random>
+#include <stdbool.h>
+
+#define SECONDS_IN_DAY 86400
+#define SECONDS_IN_HOUR 3600
+#define SECONDS_IN_MINUTE 60
+#define PIECE_MATERIAL_WEIGHT 0.25 // in kg
+#define MATERIAL_SUPPLY_WEIGHT 5000 // in kg
+
+#define MATERIAL_WAREHOUSE_CAPACITY 100000 // in kg
+#define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
 
 // error codes enum
 enum ErrCode
@@ -27,9 +37,6 @@ enum machine_types
     // ##### BIG NOT SURE ABOUT IT TODO: ... #####
     transport
 };
-
-// 8 hours 
-const int maintenance_event_generated = 8 * 60 * 60; // 8 hours in seconds
 
 double maintenance_time[][2] = {
     // first value is the time for the maintenance, second is the dispersion +- 5 minutes or more 
