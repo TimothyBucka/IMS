@@ -53,6 +53,9 @@ float break_time[][1] = {
     {15 * SECONDS_IN_MINUTE}  // oiling machine worker
 };
 
+//constants for the process of the making the brake discs
+
+
 // ------------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------- //
@@ -66,6 +69,8 @@ private:
     std::string name;
 
 public:
+    Queue input_queue; // queue of orders waiting to be processed
+
     // constructor
     machine(float, std::string);
 
@@ -108,6 +113,25 @@ public:
 
 //----------------------------------------------- PROCESSES -----------------------------------------------
 
+// ########## Simulation proccess for the production of the palettes of brake discs ##########
+class palette : public Process
+{
+private:
+    unsigned palette_size; // number of brake discs in the palette
+    float startTime; // time of the start of the palette
+    unsigned palette_id;   // id of the palette
+public:
+    static unsigned palette_count; // id of the palette
+    // constructor
+    palette(unsigned amount_of_brake_discs);
+
+    void Behavior();
+
+};
+
+//init the palette id
+unsigned palette::palette_count = 0;
+
 // ########## Simulation proccess for the maintenance of the machine ##########
 class maintenance : public Process
 {
@@ -145,10 +169,12 @@ private:
     float startTime;
 
 public:
+    static unsigned order_count; // id of the order
     // constructor
     Order();
     void Behavior();
 };
+unsigned Order::order_count = 0;
 
 // ########## Simulation proccess for the new batch of brake discs from the order ##########
 class batch : public Process

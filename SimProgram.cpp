@@ -6,8 +6,6 @@ using namespace std;
 //----------------------------------------------- GLOBALS ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------ //
 
-unsigned order_id_count = 0;
-
 // ########## GLOBAL WAREHOUSE FOR MATERIAL ##########
 material_warehouse warehouse("Material warehouse", (float)MATERIAL_WAREHOUSE_CAPACITY, (float)INITIAL_MATERIAL_WAREHOUSE_WEIGHT);
 
@@ -29,9 +27,10 @@ worker stretcher_worker(break_time[3][0], "Stretcher worker");
 worker double_sided_sander_worker(break_time[4][0], "Double sided sander worker");
 worker oiling_machine_worker(break_time[5][0], "Oiling machine worker");
 worker *workers[6];
+// TODO: add 10 packing workers.
 
 // ########## Queue for orders ##########
-Queue orders("Brake discs order:");
+Queue palettes_queue("Brake discs pallete:"); 
 
 // ------------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
@@ -81,7 +80,7 @@ bool material_warehouse::use_material(float amount)
 }
 
 // ########## Machines for producing brake discs ##########
-machine::machine(float time, string name) : Facility()
+machine::machine(float time, string name) : input_queue(), Facility()
 {
     this->maintenance_time = time;
     this->name = name;
@@ -118,6 +117,24 @@ string worker::get_name_of_worker()
 //----------------------------------------------- PROCESSES ---------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------- //
 
+// ########## Simulation proccess for the production of the palettes of brake discs ##########
+palette::palette(unsigned amount) : Process()
+{
+    this->palette_size = amount;
+    this->palette_id = palette::palette_count++;
+    this->startTime = Time;
+}
+
+void palette::Behavior()
+{
+    palettes_queue.Insert(this); // insert the order into the queue
+    cout << "Palette:" << endl;
+    cout << "\tPalette id: " << this->palette_id << endl;
+    cout << "\tPalette size: " << this->palette_size << endl;
+    cout << "\tStart time: " << this->startTime / SECONDS_IN_HOUR << endl;
+    cout << "\tEnd time: " << Time / SECONDS_IN_HOUR << endl;
+}
+
 // ########## Simulation proccess for the maintenance of the machine ##########
 maintenance::maintenance(machine *machine) : Process()
 {
@@ -143,13 +160,13 @@ break_worker::break_worker(worker *worker) : Process()
 
 void break_worker::Behavior()
 {
-    cout << "\tSTART OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
+    //cout << "\tSTART OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
 
     Seize(*(this->worker_to_break));
     Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
     Release(*(this->worker_to_break));
 
-    cout << "\tEND OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
+    //cout << "\tEND OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
 }
 
 // ########## Simulation proccess for the order ##########
@@ -157,27 +174,40 @@ Order::Order() : Process()
 {
     this->order_size = static_cast<unsigned>(Uniform(ORDER_SIZE_MIN, ORDER_SIZE_MAX)); // random number of brake discs in the order
     this->amount_of_material = PIECE_MATERIAL_WEIGHT * this->order_size;               // amount of material needed for the order
+    this->order_id = Order::order_count++;                                             // id of the order
 }
 
 void Order::Behavior()
 {
-    // cout << "Order:" << endl;
-    // cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
-    // cout << "\tOrder size: " << this->order_size << endl;
-    // cout << "\tAmount of material: " << this->amount_of_material << endl;
+    cout << "Order:" << endl;
+    cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tOrder size: " << this->order_size << endl;
+    cout << "\tAmount of material: " << this->amount_of_material << endl;
 
     Wait(SECONDS_IN_MINUTE);
 
     this->startTime = Time; // save the time of order
 
-    this->order_id = order_id_count++;
-
-    if (warehouse.use_material(this->amount_of_material))
-    {
+    if (warehouse.use_material(this->amount_of_material)) // chcek if there is enough material for the order 
+    {    
+        for (;;)
+        {
+            if (this->order_size > 5000)
+            {
+                (new palette(5000))->Activate(); // create new palette
+                this->order_size -= 5000;
+            }
+            else
+            {
+                (new palette(this->order_size))->Activate(); // create new palette
+                break;
+            }
+        }
+        //machines[0]->input_queue.Insert(this); // insert the order into the queue of the first machine
     }
     else
     {
-        // TODO: not enough material
+        // TODO: not enough material mabe the retunr is worng
         // cout << "ORDER N." << this->order_id << ": not enough material" << endl;
         return;
     }
@@ -225,7 +255,7 @@ void break_event::Behavior()
         (new break_worker(workers[i]))->Activate(); // activate the break process for each worker
     }
 
-    cout << "Break event time: " << Time / SECONDS_IN_MINUTE << endl;
+    //cout << "Break event time: " << Time / SECONDS_IN_MINUTE << endl;
 }
 
 // ########## Generator for new orders ##########
