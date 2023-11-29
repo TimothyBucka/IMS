@@ -23,7 +23,8 @@
 #define ORDER_SIZE_MAX 10000 // in pieces
 
 // error codes enum
-enum ErrCode {
+enum ErrCode
+{
     SUCCESS = 0,
     FAIL = 1
 };
@@ -32,14 +33,24 @@ enum ErrCode {
 //----------------------------------------------- GLOBALS ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------ //
 
-float maintenance_time[][2] = {
-    // first value is the time for the maintenance, second is the dispersion +- 5 minutes or more
-    {40 * SECONDS_IN_MINUTE, 5},  // pressing machine
-    {30 * SECONDS_IN_MINUTE, 5},  // one sided sander
-    {35 * SECONDS_IN_MINUTE, 5},  // aligner
-    {45 * SECONDS_IN_MINUTE, 10}, // stretcher
-    {40 * SECONDS_IN_MINUTE, 5},  // double sided sander
-    {20 * SECONDS_IN_MINUTE, 5}   // oiling machine
+float maintenance_time[][1] = {
+    // first value is the time for
+    {40 * SECONDS_IN_MINUTE},  // pressing machine
+    {30 * SECONDS_IN_MINUTE},  // one sided sander
+    {35 * SECONDS_IN_MINUTE},  // aligner
+    {45 * SECONDS_IN_MINUTE}, // stretcher
+    {40 * SECONDS_IN_MINUTE},  // double sided sander
+    {20 * SECONDS_IN_MINUTE}   // oiling machine
+};
+
+float break_time[][1] = {
+    // first value is the time for the break
+    {15 * SECONDS_IN_MINUTE}, // pressing machine worker
+    {15 * SECONDS_IN_MINUTE}, // one sided sander worker
+    {15 * SECONDS_IN_MINUTE}, // aligner worker
+    {15 * SECONDS_IN_MINUTE}, // stretcher worker
+    {15 * SECONDS_IN_MINUTE}, // double sided sander worker
+    {15 * SECONDS_IN_MINUTE}  // oiling machine worker
 };
 
 // ------------------------------------------------------------------------------------------------------- //
@@ -48,23 +59,42 @@ float maintenance_time[][2] = {
 
 //----------------------------------------------- FACILITIES -----------------------------------------------
 // ########## Machines for producing brake discs ##########
-class machine : public Facility {
+class machine : public Facility
+{
 private:
     float maintenance_time;
     std::string name;
 
 public:
+    // constructor
     machine(float, std::string);
 
     float get_maintenance_time();
     std::string get_name();
 };
 
-// ########## Material warehouse ##########
-class material_warehouse : public Facility {
+// ########## Workers ##########
+class worker : public Facility
+{
 private:
-    float max;
-    float current;
+    float break_time;
+    std::string name_of_worker;
+
+public: 
+    // constructor
+    worker(float, std::string);
+
+    float get_break_time();
+    std::string get_name_of_worker();
+};
+
+// ########## Material warehouse ##########
+class material_warehouse : public Facility
+{
+private:
+    float max;     // max capacity of the warehouse
+    float current; // current capacity of the warehouse
+
 public:
     material_warehouse(std::string, float, float);
 
@@ -79,19 +109,34 @@ public:
 //----------------------------------------------- PROCESSES -----------------------------------------------
 
 // ########## Simulation proccess for the maintenance of the machine ##########
-class maintenance : public Process {
+class maintenance : public Process
+{
 private:
     machine *machine_to_maintain;
 
 public:
-    maintenance(machine *);
     // constructor
+    maintenance(machine *);
+
+    void Behavior();
+};
+
+// ########## Simulation proccess for the break of the worker ##########
+class break_worker : public Process
+{
+private: 
+    worker *worker_to_break;
+
+public:
+    // constructor
+    break_worker(worker *);
 
     void Behavior();
 };
 
 // ########## Simulation proccess for the order ##########
-class Order : public Process {
+class Order : public Process
+{
 private:
     unsigned order_size;      // number of brake discs in the order
     float amount_of_material; // amount of material needed for the order
@@ -106,7 +151,8 @@ public:
 };
 
 // ########## Simulation proccess for the new batch of brake discs from the order ##########
-class batch : public Process {
+class batch : public Process
+{
 private:
     unsigned batch_size;           // number of brake discs in the batch to be made
     material_warehouse *warehouse; // pointer to the material warehouse
@@ -115,11 +161,12 @@ private:
     float startTime; // time of the start of the batch
 
 public:
-    void Behavior(); //TODO
+    void Behavior(); // TODO
 };
 
 // ########## Process of supply of material ##########
-class Supply : public Process {
+class Supply : public Process
+{
 public:
     Supply() : Process() {}
 
@@ -129,17 +176,26 @@ public:
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########## Event for the maintenance ##########
-class maintenance_event : public Event {
+class maintenance_event : public Event
+{
+    void Behavior();
+};
+
+// ########## Event for the break ##########
+class break_event : public Event
+{
     void Behavior();
 };
 
 // ########## Event for new orders ##########
-class order_event : public Event {
+class order_event : public Event
+{
     void Behavior();
 };
 
 // ########## Event for supplies ##########
-class supply_event : public Event {
+class supply_event : public Event
+{
     void Behavior();
 };
 
@@ -147,6 +203,9 @@ class supply_event : public Event {
 // ----------------------------------------------- FUNCS --------------------------------------------- //
 // --------------------------------------------------------------------------------------------------- //
 void fill_machine_array();
-void help(const char*);
+
+void fill_worker_array();
+
+void help(const char *);
 
 #endif
