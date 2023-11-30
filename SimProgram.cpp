@@ -19,7 +19,6 @@ machine oiling_machine(maintenance_time[5][0], "Oiling machine");
 machine *machines[6];
 
 // ########## WORKERS ##########
-
 worker pressing_machine_worker(break_time[0][0], "Pressing machine worker");
 worker one_sided_sander_worker(break_time[1][0], "One sided sander worker");
 worker aligner_worker(break_time[2][0], "Aligner worker");
@@ -30,7 +29,7 @@ worker *workers[6];
 // TODO: add 10 packing workers.
 
 // ########## Queue for orders ##########
-Queue palettes_queue("Brake discs pallete:"); 
+Queue palettes_queue("Brake discs pallete:");
 
 // ------------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
@@ -53,7 +52,7 @@ bool material_warehouse::add_material(float amount)
 {
     if (this->current + amount > this->max)
     {
-        // cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl; // TODO: ...
+        // cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
         this->current = this->max;
         return false;
     }
@@ -67,14 +66,15 @@ bool material_warehouse::use_material(float amount)
 {
     if (amount > this->current) // chceck if the amount is not bigger than the capacity
     {
-        // cout << "WAREHOUSE: amount of material is bigger than amount in wh" << endl; // TODO: ...
+        // cout << "WAREHOUSE: amount of material is bigger than amount in wh" << endl;
+        // TODO: the return might not be enough
         return false;
     }
     this->current -= amount; // decrease the capacity of the warehouse by the amount of material
 
     float utilization = static_cast<float>(this->current) / static_cast<float>(this->max) * 100;
 
-    // TODO:
+    // TODO: print out the utilization of the warehouse in stats
 
     return true;
 }
@@ -121,18 +121,34 @@ string worker::get_name_of_worker()
 palette::palette(unsigned amount) : Process()
 {
     this->palette_size = amount;
+    this->palette_done = 0;
     this->palette_id = palette::palette_count++;
     this->startTime = Time;
 }
 
 void palette::Behavior()
 {
-    palettes_queue.Insert(this); // insert the order into the queue
+    palettes_queue.Insert(this); // insert the palette into the queue
     cout << "Palette:" << endl;
     cout << "\tPalette id: " << this->palette_id << endl;
     cout << "\tPalette size: " << this->palette_size << endl;
-    cout << "\tStart time: " << this->startTime / SECONDS_IN_HOUR << endl;
-    cout << "\tEnd time: " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tStart time: " << this->startTime / SECONDS_IN_MINUTE << endl;
+    // cout << "\tEnd time: " << Time / SECONDS_IN_HOUR << endl;
+
+
+    // Start of the production of the brake discs
+    Wait(SECONDS_IN_MINUTE * 60); // wait for the machine to be set up
+    for (int i = this->palette_size; i > 0; i--)
+    {
+        Wait(SECONDS_IN_MINUTE / 60); // 1 sec to process one brake disc
+        this->palette_done++;
+    }
+
+    cout << "======================================================" << endl;
+    cout << "Done in time " << Time / SECONDS_IN_MINUTE << endl;
+    cout << "\tPalette id: " << this->palette_id << endl;
+    cout << "\tBrake discs done: " << this->palette_done << endl;
+    cout << "======================================================" << endl;
 }
 
 // ########## Simulation proccess for the maintenance of the machine ##########
@@ -160,13 +176,13 @@ break_worker::break_worker(worker *worker) : Process()
 
 void break_worker::Behavior()
 {
-    //cout << "\tSTART OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
+    // cout << "\tSTART OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
 
     Seize(*(this->worker_to_break));
     Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
     Release(*(this->worker_to_break));
 
-    //cout << "\tEND OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
+    // cout << "\tEND OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_MINUTE << endl;
 }
 
 // ########## Simulation proccess for the order ##########
@@ -188,8 +204,8 @@ void Order::Behavior()
 
     this->startTime = Time; // save the time of order
 
-    if (warehouse.use_material(this->amount_of_material)) // chcek if there is enough material for the order 
-    {    
+    if (warehouse.use_material(this->amount_of_material)) // chcek if there is enough material for the order
+    {
         for (;;)
         {
             if (this->order_size > 5000)
@@ -199,15 +215,16 @@ void Order::Behavior()
             }
             else
             {
-                (new palette(this->order_size))->Activate(); // create new palette
+                (new palette(this->order_size))->Activate();
+                this->order_size = 0;
                 break;
             }
         }
-        //machines[0]->input_queue.Insert(this); // insert the order into the queue of the first machine
+        // machines[0]->input_queue.Insert(this); // insert the order into the queue of the first machine
     }
     else
     {
-        // TODO: not enough material mabe the retunr is worng
+        // TODO: not enough material maybe the return is worng
         // cout << "ORDER N." << this->order_id << ": not enough material" << endl;
         return;
     }
@@ -255,7 +272,7 @@ void break_event::Behavior()
         (new break_worker(workers[i]))->Activate(); // activate the break process for each worker
     }
 
-    //cout << "Break event time: " << Time / SECONDS_IN_MINUTE << endl;
+    // cout << "Break event time: " << Time / SECONDS_IN_MINUTE << endl;
 }
 
 // ########## Generator for new orders ##########

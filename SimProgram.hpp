@@ -69,7 +69,7 @@ private:
     std::string name;
 
 public:
-    Queue input_queue; // queue of orders waiting to be processed
+    Queue input_queue; // queue of palettes waiting to be processed
 
     // constructor
     machine(float, std::string);
@@ -118,8 +118,10 @@ class palette : public Process
 {
 private:
     unsigned palette_size; // number of brake discs in the palette
+    unsigned palette_done; // brake discs done from the palette
     float startTime; // time of the start of the palette
     unsigned palette_id;   // id of the palette
+
 public:
     static unsigned palette_count; // id of the palette
     // constructor
