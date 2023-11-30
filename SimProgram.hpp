@@ -61,27 +61,6 @@ float break_time[][1] = {
 // ------------------------------------------------------------------------------------------------------- //
 
 //----------------------------------------------- FACILITIES -----------------------------------------------
-// ########## Machines for producing brake discs ##########
-class machine : public Facility
-{
-private:
-    float maintenance_time;
-    float preparation_time;
-    float piece_production_time;
-    std::string name;
-    // FIXME worker worker;
-
-public:
-    Queue input_queue; // queue of palettes waiting to be processed
-
-    // constructor
-    machine(float, float, float, std::string);
-
-    float get_maintenance_time();
-    float get_preparation_time();
-    float get_piece_production_time();
-    std::string get_name();
-};
 
 // ########## Workers ##########
 class worker : public Facility
@@ -96,6 +75,30 @@ public:
 
     float get_break_time();
     std::string get_name_of_worker();
+};
+
+// ########## Machines for producing brake discs ##########
+class machine : public Facility
+{
+private:
+    float maintenance_time;
+    float preparation_time;
+    float piece_production_time;
+    std::string name;
+    worker *machine_worker;
+
+public:
+    Queue input_queue; // queue of palettes waiting to be processed
+
+    // constructor
+    machine(float, float, float, std::string, worker*);
+
+    float get_maintenance_time();
+    float get_preparation_time();
+    float get_piece_production_time();
+
+    std::string get_name();
+    worker* get_worker(){return machine_worker;}
 };
 
 // ########## Material warehouse ##########
