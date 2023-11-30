@@ -66,15 +66,20 @@ class machine : public Facility
 {
 private:
     float maintenance_time;
+    float preparation_time;
+    float piece_production_time;
     std::string name;
+    // FIXME worker worker;
 
 public:
     Queue input_queue; // queue of palettes waiting to be processed
 
     // constructor
-    machine(float, std::string);
+    machine(float, float, float, std::string);
 
     float get_maintenance_time();
+    float get_preparation_time();
+    float get_piece_production_time();
     std::string get_name();
 };
 
@@ -127,8 +132,11 @@ public:
     // constructor
     palette(unsigned amount_of_brake_discs);
 
+    unsigned get_palette_size() { return palette_size; }
+    unsigned get_palette_done() { return palette_done; }
+    unsigned get_palette_id() { return palette_id; }
+    void increment_palette_done() { palette_done++; }
     void Behavior();
-
 };
 
 //init the palette id
@@ -200,6 +208,19 @@ public:
 
     void Behavior();
 };
+
+class machine_work : public Process
+{
+private:
+    machine *machine_to_work;
+    palette *palette_in_machine;
+
+public:
+    machine_work(machine *machine, palette *palette_in) : machine_to_work(machine), palette_in_machine(palette_in), Process() {}
+
+    void Behavior();
+    unsigned get_palette_size();
+}; 
 
 //----------------------------------------------- EVENTS -----------------------------------------------
 
