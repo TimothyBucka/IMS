@@ -13,7 +13,7 @@
 #define SECONDS_IN_DAY 86400
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
-#define PIECE_MATERIAL_WEIGHT 0.25  // in kg
+#define PIECE_MATERIAL_WEIGHT 0.5  // in kg
 #define MATERIAL_SUPPLY_WEIGHT 5000 // in kg
 
 #define MATERIAL_WAREHOUSE_CAPACITY 20000      // in kg
@@ -53,6 +53,15 @@ float break_time[][1] = {
     {15 * SECONDS_IN_MINUTE}  // oiling machine worker
 };
 
+enum machine_indetifier {
+    PRESSING_MACHINE = 0,
+    ONE_SIDED_SANDER,
+    ALIGNER,
+    STRETCHER,
+    DOUBLE_SIDED_SANDER,
+    OILING_MACHINE
+};
+
 //constants for the process of the making the brake discs
 
 
@@ -86,18 +95,24 @@ private:
     float piece_production_time;
     std::string name;
     worker *machine_worker;
+    enum machine_indetifier machine_id;
 
 public:
     Queue input_queue; // queue of palettes waiting to be processed
 
     // constructor
-    machine(float, float, float, std::string, worker*);
+    machine(float, float, float, std::string, worker*, enum machine_indetifier);
 
     float get_maintenance_time();
+
     float get_preparation_time();
+
     float get_piece_production_time();
 
     std::string get_name();
+
+    enum machine_indetifier get_machine_id();
+
     worker* get_worker(){return machine_worker;}
 };
 
@@ -136,9 +151,13 @@ public:
     palette(unsigned amount_of_brake_discs);
 
     unsigned get_palette_size() { return palette_size; }
+
     unsigned get_palette_done() { return palette_done; }
+
     unsigned get_palette_id() { return palette_id; }
+
     void increment_palette_done() { palette_done++; }
+
     void Behavior();
 };
 
@@ -222,6 +241,7 @@ public:
     machine_work(machine *machine, palette *palette_in) : machine_to_work(machine), palette_in_machine(palette_in), Process() {}
 
     void Behavior();
+
     unsigned get_palette_size();
 }; 
 

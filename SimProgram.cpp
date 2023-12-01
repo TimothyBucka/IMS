@@ -20,16 +20,13 @@ worker *workers[6];
 // TODO: add 10 packing workers.
 
 // ########## MACHINES ##########
-machine pressing_machine(maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker);
-machine one_sided_sander(maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker);
-machine aligner(maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker);
-machine stretcher(maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker);
-machine double_sided_sander(maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 20, "Double sided sander", &double_sided_sander_worker);
-machine oiling_machine(maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker);
+machine pressing_machine(maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
+machine one_sided_sander(maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker, ONE_SIDED_SANDER);
+machine aligner(maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker, ALIGNER);
+machine stretcher(maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker, STRETCHER);
+machine double_sided_sander(maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 20, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
+machine oiling_machine(maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker, OILING_MACHINE);
 machine *machines[6];
-
-// ########## Queue for orders ##########
-Queue palettes_queue("Brake discs pallete:");
 
 // ------------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
@@ -52,13 +49,17 @@ bool material_warehouse::add_material(float amount)
 {
     if (this->current + amount > this->max)
     {
-        // cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
+        cout << "########################################### WAREHOUSE #############################################" << endl;
+        cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
+        cout << "###################################################################################################" << endl;
         this->current = this->max;
         return false;
     }
 
+    cout << "########################################### WAREHOUSE #############################################" << endl;
     this->current += amount; // increase the capacity of the warehouse by the amount of material
-
+    cout << "WAREHOUSE: current capacity after material added: " << this->current << endl;
+    cout << "###################################################################################################" << endl;
     return true;
 }
 
@@ -66,11 +67,14 @@ bool material_warehouse::use_material(float amount)
 {
     if (amount > this->current) // chceck if the amount is not bigger than the capacity
     {
-        // cout << "WAREHOUSE: amount of material is bigger than amount in wh" << endl;
+        cout << "########################################### WAREHOUSE #############################################" << endl;
+        cout << "\tWAREHOUSE: amount of material needed for production is bigger than amount in warehouse" << endl;
+        cout << "###################################################################################################" << endl;
+
         // TODO: the return might not be enough
         return false;
     }
-    this->current -= amount; // decrease the capacity of the warehouse by the amount of material
+    this->current -= amount; // decrease the capacity of the warehouse by the amount of material needed for production
 
     float utilization = static_cast<float>(this->current) / static_cast<float>(this->max) * 100;
 
@@ -80,18 +84,24 @@ bool material_warehouse::use_material(float amount)
 }
 
 // ########## Machines for producing brake discs ##########
-machine::machine(float time, float prep_time, float piece_time, string name, worker *machine_worker) : input_queue(), Facility()
+machine::machine(float time, float prep_time, float piece_time, string name, worker *machine_worker, enum machine_indetifier machine_id) : input_queue(), Facility()
 {
     this->maintenance_time = time;
     this->preparation_time = prep_time;
     this->piece_production_time = piece_time;
     this->machine_worker = machine_worker;
     this->name = name;
+    this->machine_id = machine_id;
 }
 
 float machine::get_maintenance_time()
 {
     return this->maintenance_time;
+}
+
+enum machine_indetifier machine::get_machine_id()
+{
+    return this->machine_id;
 }
 
 float machine::get_preparation_time()
@@ -141,16 +151,38 @@ palette::palette(unsigned amount) : Process()
 
 void palette::Behavior()
 {
-    // palettes_queue.Insert(this); // insert the palette into the queue
     pressing_machine.input_queue.Insert(this); // insert the palette into the queue of the first machine
-    cout << "Palette:" << endl;
-    cout << "\tPalette id: " << this->palette_id << endl;
+    cout << "Palette id: " << this->palette_id << endl;
     cout << "\tPalette size: " << this->palette_size << endl;
     cout << "\tStart time: " << this->startTime / SECONDS_IN_MINUTE << endl;
-    // cout << "\tEnd time: " << Time / SECONDS_IN_HOUR << endl;
 
-    (new machine_work(&pressing_machine, this))->Activate(); // activate the machine work process
+    (new machine_work(&pressing_machine, this))->Activate(); // PRESSING MACHINE
     Passivate();
+
+    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE)); // ONE SIDED SANDER
+    this->palette_done = 0;
+    one_sided_sander.input_queue.Insert(this);
+    (new machine_work(&one_sided_sander, this))->Activate();
+    Passivate();
+
+    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE)); // ALIGNER
+    this->palette_done = 0;
+    aligner.input_queue.Insert(this);
+    (new machine_work(&aligner, this))->Activate();
+    Passivate();
+
+    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE)); // STRETCHER
+    this->palette_done = 0;
+    stretcher.input_queue.Insert(this);
+    (new machine_work(&stretcher, this))->Activate();
+    Passivate();
+
+    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE)); // DOUBLE SIDED SANDER
+    this->palette_done = 0;
+    double_sided_sander.input_queue.Insert(this);
+    (new machine_work(&double_sided_sander, this))->Activate();
+    Passivate();
+
 }
 
 // ########## Simulation proccess for the maintenance of the machine ##########
@@ -182,14 +214,14 @@ void break_worker::Behavior()
 {
     Seize(*(this->worker_to_break));
 
-    if ((this->worker_to_break)->get_name_of_worker() == "Pressing machine worker")
-        cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+    // if ((this->worker_to_break)->get_name_of_worker() == "Pressing machine worker" || (this->worker_to_break)->get_name_of_worker() == "One sided sander worker" || (this->worker_to_break)->get_name_of_worker() == "Aligner worker")
+    //     cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
     Release(*(this->worker_to_break));
 
-    if ((this->worker_to_break)->get_name_of_worker() == "Pressing machine worker")
-        cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+    // if ((this->worker_to_break)->get_name_of_worker() == "Pressing machine worker" || (this->worker_to_break)->get_name_of_worker() == "One sided sander worker" || (this->worker_to_break)->get_name_of_worker() == "Aligner worker")
+    //     cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 }
 
 // ########## Simulation proccess for the order ##########
@@ -215,10 +247,10 @@ void Order::Behavior()
     {
         for (;;)
         {
-            if (this->order_size > 5000)
+            if (this->order_size > 1000)
             {
-                (new palette(5000))->Activate(); // create new palette
-                this->order_size -= 5000;
+                (new palette(1000))->Activate(); // create new palette
+                this->order_size -= 1000;
             }
             else
             {
@@ -246,7 +278,7 @@ void Supply::Behavior()
 
     if (warehouse.add_material(MATERIAL_SUPPLY_WEIGHT))
     {
-        // cout << "SUPPLY: added 5000 kg of material" << endl;
+        cout << "SUPPLY: added 5000 kg of material" << endl;
     }
     else
     {
@@ -258,30 +290,87 @@ void Supply::Behavior()
 
 void machine_work::Behavior()
 {
-    Seize(*(this->machine_to_work));
-    Seize(*(this->machine_to_work->get_worker()));
-    cout << "======================================================" << endl;
-    cout << "Start in time " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-    cout << "======================================================" << endl;
-    Wait((this->machine_to_work)->get_preparation_time());
 
-    for (int i = this->palette_in_machine->get_palette_size(); i > 0; i--)
+    switch (this->machine_to_work->get_machine_id())
     {
-        Wait(this->machine_to_work->get_piece_production_time());
-        this->palette_in_machine->increment_palette_done();
+    case PRESSING_MACHINE:
+    case ONE_SIDED_SANDER:
+    case ALIGNER:
+    case DOUBLE_SIDED_SANDER:
+        Seize(*(this->machine_to_work));
+        Seize(*(this->machine_to_work->get_worker()));
+
+        cout << "===========================START===========================" << endl;
+        cout << "Machine: " << this->machine_to_work->get_name() << endl;
+        cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
+        cout << "===========================================================" << endl;
+
+        Wait((this->machine_to_work)->get_preparation_time());
+
+        for (int i = this->palette_in_machine->get_palette_size(); i > 0; i--)
+        {
+            Wait(this->machine_to_work->get_piece_production_time());
+            this->palette_in_machine->increment_palette_done();
+        }
+        Release(*(this->machine_to_work));
+        Release(*(this->machine_to_work->get_worker()));
+
+        cout << "=============================END=========================" << endl;
+        cout << "Machine: " << this->machine_to_work->get_name() << endl;
+        cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
+        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
+        cout << "\tBrake discs done: " << this->palette_in_machine->get_palette_done() << endl;
+        cout << "=========================================================" << endl;
+
+        if (!this->machine_to_work->input_queue.Empty())
+            this->machine_to_work->input_queue.GetFirst()->Activate();
+        break;
+
+    case STRETCHER:
+    {
+        Seize(*(this->machine_to_work));
+        Seize(*(this->machine_to_work->get_worker()));
+
+        cout << "===========================START===========================" << endl;
+        cout << "Machine: " << this->machine_to_work->get_name() << endl;
+        cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
+        cout << "===========================================================" << endl;
+
+        Wait((this->machine_to_work)->get_preparation_time());
+        int i = 0;
+        int PACKET_SIZE = 15;
+        for (i = this->palette_in_machine->get_palette_size(); i > 0; i -= PACKET_SIZE)
+        {
+            // redistribute paltte into packets by 15 pieces
+            if (i > PACKET_SIZE)
+            {
+                Wait(this->machine_to_work->get_piece_production_time());
+                this->palette_in_machine->increment_palette_done();
+            }
+            else if (i < PACKET_SIZE)
+            {
+                PACKET_SIZE = i;
+                Wait(this->machine_to_work->get_piece_production_time());
+                this->palette_in_machine->increment_palette_done();
+            }
+        }
+        Release(*(this->machine_to_work));
+        Release(*(this->machine_to_work->get_worker()));
+
+        cout << "=============================END=========================" << endl;
+        cout << "Machine: " << this->machine_to_work->get_name() << endl;
+        cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
+        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
+        cout << "\tBrake discs done (in packets): " << this->palette_in_machine->get_palette_done() << endl;
+        cout << "=========================================================" << endl;
+
+        if (!this->machine_to_work->input_queue.Empty())
+            this->machine_to_work->input_queue.GetFirst()->Activate();
+        break;
     }
-    Release(*(this->machine_to_work));
-    Release(*(this->machine_to_work->get_worker()));
-
-    cout << "======================================================" << endl;
-    cout << "Done in time " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-    cout << "\tBrake discs done: " << this->palette_in_machine->get_palette_done() << endl;
-    cout << "======================================================" << endl;
-
-    if (!this->machine_to_work->input_queue.Empty())
-        this->machine_to_work->input_queue.GetFirst()->Activate();
+    }
 }
 
 //----------------------------------------------- EVENTS -----------------------------------------------
@@ -321,7 +410,7 @@ void order_event::Behavior()
 void supply_event::Behavior()
 {
     (new Supply)->Activate();
-    Activate(Time + Normal(SECONDS_IN_DAY, SECONDS_IN_HOUR * 2)); // supply every 24 hours (exponential
+    Activate(Time + Normal(SECONDS_IN_DAY, SECONDS_IN_HOUR * 2)); // supply every 24 hours (normal)
 }
 
 // --------------------------------------------------------------------------------------------------- //
@@ -349,21 +438,22 @@ void fill_worker_array()
 
 void help(const char *prog_name)
 {
-    // cout << prog_name << " program implements the SHO of the engineering company." << endl;
-    // cout << "Subject: IMS" << endl;
-    // cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
-    // cout << "          Adam Pap (xpapad11) " << endl;
-    // cout << "Contacts: xbucka00@stud.fit.vutbr.cz " << endl;
-    // cout << "          xpapad11@stud.fit.vutbr.cz " << endl;
+    cout << prog_name << " program implements the SHO of the engineering company." << endl;
+    cout << "Subject: IMS" << endl;
+    cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
+    cout << "          Adam Pap (xpapad11) " << endl;
+    cout << "Contacts: xbucka00@stud.fit.vutbr.cz " << endl;
+    cout << "          xpapad11@stud.fit.vutbr.cz " << endl;
 }
 
 int main(int argc, char *argv[])
 {
 
     // parameter handling
-    if (argc > 1)
+    if (argc == 2 && strcmp(argv[1], "--help") == 0)
     {
         help(argv[0]);
+        return 0;
     }
 
     fill_machine_array();
@@ -373,7 +463,7 @@ int main(int argc, char *argv[])
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SECONDS_IN_DAY * 3); // time of simulation
+    Init(0, SECONDS_IN_DAY * 2); // time of simulation
     (new order_event)->Activate();
     (new supply_event)->Activate();
     (new maintenance_event)->Activate(SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation
