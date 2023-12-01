@@ -13,8 +13,9 @@
 #define SECONDS_IN_DAY 86400
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
-#define PIECE_MATERIAL_WEIGHT 0.5  // in kg
-#define MATERIAL_SUPPLY_WEIGHT 5000 // in kg
+#define PIECE_MATERIAL_WEIGHT 0.5        // in kg
+#define PICE_AFTER_PRODUCTION_WEIGHT 0.2 // TODO in kg
+#define MATERIAL_SUPPLY_WEIGHT 5000      // in kg
 
 #define MATERIAL_WAREHOUSE_CAPACITY 20000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
@@ -23,8 +24,7 @@
 #define ORDER_SIZE_MAX 10000 // in pieces
 
 // error codes enum
-enum ErrCode
-{
+enum ErrCode {
     SUCCESS = 0,
     FAIL = 1
 };
@@ -35,12 +35,12 @@ enum ErrCode
 
 float maintenance_time[][1] = {
     // first value is the time for
-    {40 * SECONDS_IN_MINUTE},  // pressing machine
-    {30 * SECONDS_IN_MINUTE},  // one sided sander
-    {35 * SECONDS_IN_MINUTE},  // aligner
+    {40 * SECONDS_IN_MINUTE}, // pressing machine
+    {30 * SECONDS_IN_MINUTE}, // one sided sander
+    {35 * SECONDS_IN_MINUTE}, // aligner
     {45 * SECONDS_IN_MINUTE}, // stretcher
-    {40 * SECONDS_IN_MINUTE},  // double sided sander
-    {20 * SECONDS_IN_MINUTE}   // oiling machine
+    {40 * SECONDS_IN_MINUTE}, // double sided sander
+    {20 * SECONDS_IN_MINUTE}  // oiling machine
 };
 
 float break_time[][1] = {
@@ -62,8 +62,7 @@ enum machine_indetifier {
     OILING_MACHINE
 };
 
-//constants for the process of the making the brake discs
-
+// constants for the process of the making the brake discs
 
 // ------------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
@@ -72,13 +71,12 @@ enum machine_indetifier {
 //----------------------------------------------- FACILITIES -----------------------------------------------
 
 // ########## Workers ##########
-class worker : public Facility
-{
+class worker : public Facility {
 private:
     float break_time;
     std::string name_of_worker;
 
-public: 
+public:
     // constructor
     worker(float, std::string);
 
@@ -87,8 +85,7 @@ public:
 };
 
 // ########## Machines for producing brake discs ##########
-class machine : public Facility
-{
+class machine : public Facility {
 private:
     float maintenance_time;
     float preparation_time;
@@ -101,7 +98,7 @@ public:
     Queue input_queue; // queue of palettes waiting to be processed
 
     // constructor
-    machine(float, float, float, std::string, worker*, enum machine_indetifier);
+    machine(float, float, float, std::string, worker *, enum machine_indetifier);
 
     float get_maintenance_time();
 
@@ -113,12 +110,11 @@ public:
 
     enum machine_indetifier get_machine_id();
 
-    worker* get_worker(){return machine_worker;}
+    worker *get_worker() { return machine_worker; }
 };
 
 // ########## Material warehouse ##########
-class material_warehouse : public Facility
-{
+class material_warehouse : public Facility {
 private:
     float max;     // max capacity of the warehouse
     float current; // current capacity of the warehouse
@@ -137,12 +133,11 @@ public:
 //----------------------------------------------- PROCESSES -----------------------------------------------
 
 // ########## Simulation proccess for the production of the palettes of brake discs ##########
-class palette : public Process
-{
+class palette : public Process {
 private:
     unsigned palette_size; // number of brake discs in the palette
     unsigned palette_done; // brake discs done from the palette
-    float startTime; // time of the start of the palette
+    float startTime;       // time of the start of the palette
     unsigned palette_id;   // id of the palette
 
 public:
@@ -156,17 +151,16 @@ public:
 
     unsigned get_palette_id() { return palette_id; }
 
-    void increment_palette_done() { palette_done++; }
+    void increment_palette_done(unsigned i = 0) { palette_done = i ? palette_done + i : palette_done + 1; }
 
     void Behavior();
 };
 
-//init the palette id
+// init the palette id
 unsigned palette::palette_count = 0;
 
 // ########## Simulation proccess for the maintenance of the machine ##########
-class maintenance : public Process
-{
+class maintenance : public Process {
 private:
     machine *machine_to_maintain;
 
@@ -178,9 +172,8 @@ public:
 };
 
 // ########## Simulation proccess for the break of the worker ##########
-class break_worker : public Process
-{
-private: 
+class break_worker : public Process {
+private:
     worker *worker_to_break;
 
 public:
@@ -191,8 +184,7 @@ public:
 };
 
 // ########## Simulation proccess for the order ##########
-class Order : public Process
-{
+class Order : public Process {
 private:
     unsigned order_size;      // number of brake discs in the order
     float amount_of_material; // amount of material needed for the order
@@ -209,8 +201,7 @@ public:
 unsigned Order::order_count = 0;
 
 // ########## Simulation proccess for the new batch of brake discs from the order ##########
-class batch : public Process
-{
+class batch : public Process {
 private:
     unsigned batch_size;           // number of brake discs in the batch to be made
     material_warehouse *warehouse; // pointer to the material warehouse
@@ -223,51 +214,45 @@ public:
 };
 
 // ########## Process of supply of material ##########
-class Supply : public Process
-{
+class Supply : public Process {
 public:
     Supply() : Process() {}
 
     void Behavior();
 };
 
-class machine_work : public Process
-{
+class machine_work : public Process {
 private:
     machine *machine_to_work;
     palette *palette_in_machine;
 
 public:
-    machine_work(machine *machine, palette *palette_in) : machine_to_work(machine), palette_in_machine(palette_in), Process() {}
+    machine_work(machine *machine, palette *palette_in) : Process(), machine_to_work(machine), palette_in_machine(palette_in) {}
 
     void Behavior();
 
     unsigned get_palette_size();
-}; 
+};
 
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########## Event for the maintenance ##########
-class maintenance_event : public Event
-{
+class maintenance_event : public Event {
     void Behavior();
 };
 
 // ########## Event for the break ##########
-class break_event : public Event
-{
+class break_event : public Event {
     void Behavior();
 };
 
 // ########## Event for new orders ##########
-class order_event : public Event
-{
+class order_event : public Event {
     void Behavior();
 };
 
 // ########## Event for supplies ##########
-class supply_event : public Event
-{
+class supply_event : public Event {
     void Behavior();
 };
 
