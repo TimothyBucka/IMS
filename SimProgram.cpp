@@ -17,7 +17,18 @@ worker stretcher_worker(break_time[3][0], "Stretcher worker");
 worker double_sided_sander_worker(break_time[4][0], "Double sided sander worker");
 worker oiling_machine_worker(break_time[5][0], "Oiling machine worker");
 worker *workers[6];
-// TODO: add 10 packing workers.
+
+worker *packing_workers[10];
+worker packing_worker_0(15 * SECONDS_IN_MINUTE, "Packing worker 0");
+worker packing_worker_1(15 * SECONDS_IN_MINUTE, "Packing worker 1");
+worker packing_worker_2(15 * SECONDS_IN_MINUTE, "Packing worker 2");
+worker packing_worker_3(15 * SECONDS_IN_MINUTE, "Packing worker 3");
+worker packing_worker_4(15 * SECONDS_IN_MINUTE, "Packing worker 4");
+worker packing_worker_5(15 * SECONDS_IN_MINUTE, "Packing worker 5");
+worker packing_worker_6(15 * SECONDS_IN_MINUTE, "Packing worker 6");
+worker packing_worker_7(15 * SECONDS_IN_MINUTE, "Packing worker 7");
+worker packing_worker_8(15 * SECONDS_IN_MINUTE, "Packing worker 8");
+worker packing_worker_9(15 * SECONDS_IN_MINUTE, "Packing worker 9");
 
 // ########## MACHINES ##########
 machine pressing_machine(maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
@@ -182,6 +193,32 @@ void palette::Behavior() {
     double_sided_sander.input_queue.Insert(this);
     (new machine_work(&double_sided_sander, this))->Activate(); // DOUBLE SIDED SANDER
     Passivate();
+
+    // quality control
+    unsigned bad_pieces = 0;
+    for (int i = this->palette_size; i > 0; i--) {
+        double rand_n = Uniform(0, 100);
+
+        if (rand_n <= BAD_PIECE_PERCENT) {
+            bad_pieces++;
+        }
+    }
+    Wait(PICE_REWORK_TIME * bad_pieces);
+
+    this->palette_done = 0;
+    oiling_machine.input_queue.Insert(this);
+    (new machine_work(&oiling_machine, this))->Activate(); // OILING MACHINE
+    Passivate();
+
+    // transport
+    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
+
+    // packing
+    this->palette_done = 0;
+    auto packing_proc = new packing(this);
+    packing_proc->input_queue.Insert(this);
+    packing_proc->Activate();
+    Passivate();
 }
 
 // ########## Simulation proccess for the maintenance of the machine ##########
@@ -273,53 +310,32 @@ void Supply::Behavior() {
 
 void machine_work::Behavior() {
 
+    Seize(*(this->machine_to_work));
+    if (this->machine_to_work->get_machine_id() != OILING_MACHINE) // oiling machine does not need worker
+        Seize(*(this->machine_to_work->get_worker()));
+
+    if (this->palette_in_machine->get_palette_id() == 0) {
+        cout << "===========================START===========================" << endl;
+        cout << "Machine: " << this->machine_to_work->get_name() << endl;
+        cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
+        cout << "===========================================================" << endl;
+    }
+
+    Wait((this->machine_to_work)->get_preparation_time());
+
     switch (this->machine_to_work->get_machine_id()) {
     case PRESSING_MACHINE:
     case ONE_SIDED_SANDER:
     case ALIGNER:
     case DOUBLE_SIDED_SANDER:
     case OILING_MACHINE:
-        Seize(*(this->machine_to_work));
-        Seize(*(this->machine_to_work->get_worker()));
-
-        cout << "===========================START===========================" << endl;
-        cout << "Machine: " << this->machine_to_work->get_name() << endl;
-        cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
-        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-        cout << "===========================================================" << endl;
-
-        Wait((this->machine_to_work)->get_preparation_time());
-
         for (int i = this->palette_in_machine->get_palette_size(); i > 0; i--) {
             Wait(this->machine_to_work->get_piece_production_time());
             this->palette_in_machine->increment_palette_done();
         }
-        Release(*(this->machine_to_work));
-        Release(*(this->machine_to_work->get_worker()));
-
-        cout << "=============================END=========================" << endl;
-        cout << "Machine: " << this->machine_to_work->get_name() << endl;
-        cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
-        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-        cout << "\tBrake discs done: " << this->palette_in_machine->get_palette_done() << endl;
-        cout << "=========================================================" << endl;
-
-        if (!this->machine_to_work->input_queue.Empty())
-            this->machine_to_work->input_queue.GetFirst()->Activate();
         break;
-
     case STRETCHER:
-        Seize(*(this->machine_to_work));
-        Seize(*(this->machine_to_work->get_worker()));
-
-        cout << "===========================START===========================" << endl;
-        cout << "Machine: " << this->machine_to_work->get_name() << endl;
-        cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
-        cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-        cout << "===========================================================" << endl;
-
-        Wait((this->machine_to_work)->get_preparation_time());
-
         // redistribute paltte into packets by 15 pieces
         int PACKET_SIZE = 15;
         for (int i = this->palette_in_machine->get_palette_size(); i > 0; i -= PACKET_SIZE) {
@@ -330,21 +346,40 @@ void machine_work::Behavior() {
             Wait(this->machine_to_work->get_piece_production_time());
             this->palette_in_machine->increment_palette_done(PACKET_SIZE);
         }
+        break;
+    }
 
-        Release(*(this->machine_to_work));
+    Release(*(this->machine_to_work));
+    if (this->machine_to_work->get_machine_id() != OILING_MACHINE)
         Release(*(this->machine_to_work->get_worker()));
 
+    if (this->palette_in_machine->get_palette_id() == 0) {
         cout << "=============================END=========================" << endl;
         cout << "Machine: " << this->machine_to_work->get_name() << endl;
         cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
         cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-        cout << "\tBrake discs done (in packets): " << this->palette_in_machine->get_palette_done() << endl;
+        cout << "\tBrake discs done: " << this->palette_in_machine->get_palette_done() << endl;
         cout << "=========================================================" << endl;
-
-        if (!this->machine_to_work->input_queue.Empty())
-            this->machine_to_work->input_queue.GetFirst()->Activate();
-        break;
     }
+
+    if (!this->machine_to_work->input_queue.Empty())
+        this->machine_to_work->input_queue.GetFirst()->Activate();
+}
+
+// ########## Simulation proccess for packing ##########
+void packing::Behavior() {
+
+    for (int i=0; i < this->palette_to_pack->get_palette_size(); i++) {
+        Wait(1);
+    }
+
+    // for(auto i: packing_workers) {
+    //     if (i->Busy()) {
+    //         continue;
+    //     }
+    //     Seize(*i);
+    //     break;
+    // }
 }
 
 //----------------------------------------------- EVENTS -----------------------------------------------
@@ -364,6 +399,10 @@ void break_event::Behavior() {
 
     for (int i = 0; i < 6; i++) {
         (new break_worker(workers[i]))->Activate(); // activate the break process for each worker
+    }
+
+    for (int i = 0; i < 10; i++) {
+        (new break_worker(packing_workers[i]))->Activate(); // activate the break process for each worker
     }
 
     // cout << "Break event time: " << Time / SECONDS_IN_MINUTE << endl;
@@ -400,6 +439,17 @@ void fill_worker_array() {
     workers[3] = &stretcher_worker;
     workers[4] = &double_sided_sander_worker;
     workers[5] = &oiling_machine_worker;
+
+    packing_workers[0] = &packing_worker_0;
+    packing_workers[1] = &packing_worker_1;
+    packing_workers[2] = &packing_worker_2;
+    packing_workers[3] = &packing_worker_3;
+    packing_workers[4] = &packing_worker_4;
+    packing_workers[5] = &packing_worker_5;
+    packing_workers[6] = &packing_worker_6;
+    packing_workers[7] = &packing_worker_7;
+    packing_workers[8] = &packing_worker_8;
+    packing_workers[9] = &packing_worker_9;
 }
 
 void help(const char *prog_name) {

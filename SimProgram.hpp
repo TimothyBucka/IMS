@@ -13,9 +13,13 @@
 #define SECONDS_IN_DAY 86400
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
-#define PIECE_MATERIAL_WEIGHT 0.5        // in kg
-#define PICE_AFTER_PRODUCTION_WEIGHT 0.2 // TODO in kg
-#define MATERIAL_SUPPLY_WEIGHT 5000      // in kg
+#define PIECE_MATERIAL_WEIGHT 0.5         // in kg
+#define PICE_AFTER_PRODUCTION_WEIGHT 0.25 // TODO in kg
+#define MATERIAL_SUPPLY_WEIGHT 5000       // in kg
+
+#define BAD_PIECE_PERCENT 16
+
+#define PICE_REWORK_TIME 18 // in seconds
 
 #define MATERIAL_WAREHOUSE_CAPACITY 20000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
@@ -230,8 +234,17 @@ public:
     machine_work(machine *machine, palette *palette_in) : Process(), machine_to_work(machine), palette_in_machine(palette_in) {}
 
     void Behavior();
+};
 
-    unsigned get_palette_size();
+class packing : public Process {
+private:
+    palette *palette_to_pack;
+
+public:
+    Queue input_queue;
+    packing(palette *palette) : Process(), palette_to_pack(palette), input_queue() {}
+
+    void Behavior();
 };
 
 //----------------------------------------------- EVENTS -----------------------------------------------
