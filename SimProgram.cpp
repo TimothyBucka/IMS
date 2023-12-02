@@ -18,17 +18,7 @@ worker double_sided_sander_worker(break_time[4][0], "Double sided sander worker"
 worker oiling_machine_worker(break_time[5][0], "Oiling machine worker");
 worker *workers[6];
 
-worker *packing_workers[10];
-worker packing_worker_0(15 * SECONDS_IN_MINUTE, "Packing worker 0");
-worker packing_worker_1(15 * SECONDS_IN_MINUTE, "Packing worker 1");
-worker packing_worker_2(15 * SECONDS_IN_MINUTE, "Packing worker 2");
-worker packing_worker_3(15 * SECONDS_IN_MINUTE, "Packing worker 3");
-worker packing_worker_4(15 * SECONDS_IN_MINUTE, "Packing worker 4");
-worker packing_worker_5(15 * SECONDS_IN_MINUTE, "Packing worker 5");
-worker packing_worker_6(15 * SECONDS_IN_MINUTE, "Packing worker 6");
-worker packing_worker_7(15 * SECONDS_IN_MINUTE, "Packing worker 7");
-worker packing_worker_8(15 * SECONDS_IN_MINUTE, "Packing worker 8");
-worker packing_worker_9(15 * SECONDS_IN_MINUTE, "Packing worker 9");
+Store packing_workers(N_PACKING_WORKERS);
 
 // ########## MACHINES ##########
 machine pressing_machine(maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
@@ -217,6 +207,7 @@ void palette::Behavior() {
         }
         (new package_for_worker(this, j++, PACKAGE_SIZE))->Activate(Time + Normal(15, 1));
     }
+
     Passivate();
 
     cout << "------------------------------------------------------------------- Back from packing" << endl;
@@ -257,6 +248,13 @@ void break_worker::Behavior() {
 
     // if ((this->worker_to_break)->get_name_of_worker() == "Pressing machine worker" || (this->worker_to_break)->get_name_of_worker() == "One sided sander worker" || (this->worker_to_break)->get_name_of_worker() == "Aligner worker")
     //     cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+}
+
+// ########### break_packaging_workers ###########
+void break_packaging_workers::Behavior() {
+    Enter(packing_workers, N_PACKING_WORKERS);
+    Wait(Normal(10 * SECONDS_IN_MINUTE, 1 * SECONDS_IN_MINUTE));
+    Leave(packing_workers, N_PACKING_WORKERS);
 }
 
 // ########## Simulation proccess for the order ##########
@@ -374,39 +372,23 @@ void package_for_worker::Behavior() {
     cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
     cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
     cout << "\tPackage id: " << this->package_id << endl;
-
-    worker *free_worker;
-
-    bool allWorkersBusy = true;
-    for (auto worker : packing_workers) {
-        if (!worker->Busy()) {
-            allWorkersBusy = false;
-            free_worker = worker;
-            break;
-        }
-    }
-    if (allWorkersBusy)
-        free_worker = packing_workers[static_cast<int>(Uniform(0, 10))]; // random worker
-
-    cout << "\tWorker: " << free_worker->get_name_of_worker() << endl;
     cout << "===========================================================" << endl;
 
-    Seize(*free_worker);
+    Enter(packing_workers, 1);
     Wait(3 * SECONDS_IN_MINUTE);
-    Release(*free_worker);
+    Leave(packing_workers, 1);
 
     cout << "=============================END=========================" << endl;
     cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
     cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
     cout << "\tPackage id: " << this->package_id << endl;
-    cout << "\tWorker: " << free_worker->get_name_of_worker() << endl;
     cout << "=========================================================" << endl;
 
     this->palette_to_pack->increment_palette_done(this->size);
 
     if (this->palette_to_pack->get_palette_done() == this->palette_to_pack->get_palette_size()) {
-        cout << "Palette done" << endl;
-        this->palette_to_pack->Activate();
+        cout << "----------------------------------------Palette done" << endl;
+        this->palette_to_pack->Activate(); // activate the palette process
     }
 }
 
@@ -429,9 +411,7 @@ void break_event::Behavior() {
         (new break_worker(workers[i]))->Activate(); // activate the break process for each worker
     }
 
-    for (int i = 0; i < 10; i++) {
-        (new break_worker(packing_workers[i]))->Activate(); // activate the break process for each worker
-    }
+    (new break_packaging_workers)->Activate(); // activate the break process for packaging workers
 
     // cout << "Break event time: " << Time / SECONDS_IN_MINUTE << endl;
 }
@@ -467,17 +447,6 @@ void fill_worker_array() {
     workers[3] = &stretcher_worker;
     workers[4] = &double_sided_sander_worker;
     workers[5] = &oiling_machine_worker;
-
-    packing_workers[0] = &packing_worker_0;
-    packing_workers[1] = &packing_worker_1;
-    packing_workers[2] = &packing_worker_2;
-    packing_workers[3] = &packing_worker_3;
-    packing_workers[4] = &packing_worker_4;
-    packing_workers[5] = &packing_worker_5;
-    packing_workers[6] = &packing_worker_6;
-    packing_workers[7] = &packing_worker_7;
-    packing_workers[8] = &packing_worker_8;
-    packing_workers[9] = &packing_worker_9;
 }
 
 void help(const char *prog_name) {
@@ -504,7 +473,7 @@ int main(int argc, char *argv[]) {
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SECONDS_IN_DAY * 2); // time of simulation
+    Init(0, SECONDS_IN_DAY * 10); // time of simulation
     (new order_event)->Activate();
     (new supply_event)->Activate();
     (new maintenance_event)->Activate(SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation

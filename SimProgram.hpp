@@ -21,6 +21,8 @@
 
 #define PICE_REWORK_TIME 18 // in seconds
 
+#define N_PACKING_WORKERS 10
+
 #define MATERIAL_WAREHOUSE_CAPACITY 20000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
 
@@ -72,7 +74,9 @@ enum machine_indetifier {
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------- //
 
-//----------------------------------------------- FACILITIES -----------------------------------------------
+// ---------------------------------------------- STORES -------------------------------------------------- //
+
+//----------------------------------------------- FACILITIES ----------------------------------------------- //
 
 // ########## Workers ##########
 class worker : public Facility {
@@ -188,6 +192,13 @@ public:
     // constructor
     break_worker(worker *);
 
+    void Behavior();
+};
+
+// ########## Process for triggering break for packaging workers  ##########
+class break_packaging_workers : public Process {
+public:
+    break_packaging_workers() : Process(1){};
     void Behavior();
 };
 
