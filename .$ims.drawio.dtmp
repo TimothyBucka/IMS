@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2023-12-02T14:59:11.537Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="BuYMvCt9ALrS9YsigRrY" version="22.1.2" type="device" pages="2">
+<mxfile host="Electron" modified="2023-12-02T16:36:59.003Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="Ag5PQjYnNNbKc0BUl_Rv" version="22.1.2" type="device" pages="2">
   <diagram name="Page-1" id="9L_iSFYxcWo2DNKwxm4P">
     <mxGraphModel dx="1206" dy="1644" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -1231,7 +1231,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="LVOwSA8RnYYJ3xsOs7D2" name="Page-2">
-    <mxGraphModel dx="1206" dy="1644" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="689" dy="1294" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -2364,8 +2364,8 @@
         <mxCell id="CGEwvCSKY8YNGhSo1m-X-80" value="&lt;h6&gt;Y&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="483" y="1100" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="CGEwvCSKY8YNGhSo1m-X-82" value="&lt;h6&gt;100&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="581.51" y="1100" width="40" height="60" as="geometry" />
+        <mxCell id="CGEwvCSKY8YNGhSo1m-X-82" value="&lt;h6&gt;50&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="586.51" y="1100" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="CGEwvCSKY8YNGhSo1m-X-83" value="&lt;h6&gt;[pozn.: výsledná váha krabice nesmie presiahnuť 10 kg. (váha výrobku je 0.1 kg)]&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="643" y="1050" width="330" height="60" as="geometry" />
@@ -2519,11 +2519,8 @@
         <mxCell id="CGEwvCSKY8YNGhSo1m-X-158" value="&lt;h6&gt;z&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="515" y="1160" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="CGEwvCSKY8YNGhSo1m-X-160" value="&lt;h6&gt;10&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="577" y="1140" width="30" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="CGEwvCSKY8YNGhSo1m-X-161" value="&lt;h6&gt;10&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="593" y="1220" width="30" height="60" as="geometry" />
+          <mxGeometry x="639" y="1295" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="CGEwvCSKY8YNGhSo1m-X-162" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.949;entryY=0.294;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="CGEwvCSKY8YNGhSo1m-X-60" target="CGEwvCSKY8YNGhSo1m-X-117" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -2533,9 +2530,6 @@
               <mxPoint x="615" y="1280" />
             </Array>
           </mxGeometry>
-        </mxCell>
-        <mxCell id="CGEwvCSKY8YNGhSo1m-X-164" value="&lt;h6&gt;10&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="920" y="1200" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="CGEwvCSKY8YNGhSo1m-X-166" value="&lt;h6&gt;Paleta hotová&lt;/h6&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="1182" y="1140" width="80" height="60" as="geometry" />

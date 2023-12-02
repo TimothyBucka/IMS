@@ -48,7 +48,8 @@ machine *machines[6];
 // ------------------------------------------------------------------------------------------------------- //
 
 // ########## Material warehouse ##########
-material_warehouse::material_warehouse(string desc, float max_capacity, float current_capacity) : Facility() {
+material_warehouse::material_warehouse(string desc, float max_capacity, float current_capacity) : Facility()
+{
     (void)desc;
     this->max = max_capacity;
     this->current = current_capacity;
@@ -56,8 +57,10 @@ material_warehouse::material_warehouse(string desc, float max_capacity, float cu
 
 float material_warehouse::get_current() { return this->current; }
 
-bool material_warehouse::add_material(float amount) {
-    if (this->current + amount > this->max) {
+bool material_warehouse::add_material(float amount)
+{
+    if (this->current + amount > this->max)
+    {
         cout << "########################################### WAREHOUSE #############################################" << endl;
         cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
         cout << "###################################################################################################" << endl;
@@ -72,7 +75,8 @@ bool material_warehouse::add_material(float amount) {
     return true;
 }
 
-bool material_warehouse::use_material(float amount) {
+bool material_warehouse::use_material(float amount)
+{
     if (amount > this->current) // chceck if the amount is not bigger than the capacity
     {
         cout << "########################################### WAREHOUSE #############################################" << endl;
@@ -93,7 +97,8 @@ bool material_warehouse::use_material(float amount) {
 }
 
 // ########## Machines for producing brake discs ##########
-machine::machine(float time, float prep_time, float piece_time, string name, worker *machine_worker, enum machine_indetifier machine_id) : Facility(), input_queue() {
+machine::machine(float time, float prep_time, float piece_time, string name, worker *machine_worker, enum machine_indetifier machine_id) : Facility(), input_queue()
+{
     this->maintenance_time = time;
     this->preparation_time = prep_time;
     this->piece_production_time = piece_time;
@@ -102,37 +107,45 @@ machine::machine(float time, float prep_time, float piece_time, string name, wor
     this->machine_id = machine_id;
 }
 
-float machine::get_maintenance_time() {
+float machine::get_maintenance_time()
+{
     return this->maintenance_time;
 }
 
-enum machine_indetifier machine::get_machine_id() {
+enum machine_indetifier machine::get_machine_id()
+{
     return this->machine_id;
 }
 
-float machine::get_preparation_time() {
+float machine::get_preparation_time()
+{
     return this->preparation_time;
 }
 
-float machine::get_piece_production_time() {
+float machine::get_piece_production_time()
+{
     return this->piece_production_time;
 }
 
-string machine::get_name() {
+string machine::get_name()
+{
     return this->name;
 }
 
 // ########## Workers ##########
-worker::worker(float break_time, string name) : Facility() {
+worker::worker(float break_time, string name) : Facility()
+{
     this->break_time = break_time;
     this->name_of_worker = name;
 }
 
-float worker::get_break_time() {
+float worker::get_break_time()
+{
     return this->break_time;
 }
 
-string worker::get_name_of_worker() {
+string worker::get_name_of_worker()
+{
     return this->name_of_worker;
 }
 
@@ -141,14 +154,16 @@ string worker::get_name_of_worker() {
 // ------------------------------------------------------------------------------------------------------- //
 
 // ########## Simulation proccess for the production of the palettes of brake discs ##########
-palette::palette(unsigned amount) : Process() {
+palette::palette(unsigned amount) : Process()
+{
     this->palette_size = amount;
     this->palette_done = 0;
     this->palette_id = palette::palette_count++;
     this->startTime = Time;
 }
 
-void palette::Behavior() {
+void palette::Behavior()
+{
     cout << "Palette id: " << this->palette_id << endl;
     cout << "\tPalette size: " << this->palette_size << endl;
     cout << "\tStart time: " << this->startTime / SECONDS_IN_MINUTE << endl;
@@ -182,7 +197,8 @@ void palette::Behavior() {
     Passivate();
 
     // cleaning
-    for (int i = this->palette_size; i > 0; i--) {
+    for (int i = this->palette_size; i > 0; i--)
+    {
         Wait(10);
     }
 
@@ -196,10 +212,12 @@ void palette::Behavior() {
 
     // quality control
     unsigned bad_pieces = 0;
-    for (int i = this->palette_size; i > 0; i--) {
+    for (int i = this->palette_size; i > 0; i--)
+    {
         double rand_n = Uniform(0, 100);
 
-        if (rand_n <= BAD_PIECE_PERCENT) {
+        if (rand_n <= BAD_PIECE_PERCENT)
+        {
             bad_pieces++;
         }
     }
@@ -214,19 +232,54 @@ void palette::Behavior() {
     Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
 
     // packing
-    this->palette_done = 0;
-    auto packing_proc = new packing(this);
-    packing_proc->input_queue.Insert(this);
-    packing_proc->Activate();
+    // auto packing_proc = new packing(this);
+    //  packing_proc->input_queue.Insert(this);
+    //  packing_proc->Activate();
+    //  Passivate();
+
+    int j = 0;
+    int PACKAGE_SIZE = 50;
+    for (int i = this->palette_size; i > 0; i -= PACKAGE_SIZE)
+    {
+           this->palette_done = 0;
+        // for (j = 0; j < 10; j++)
+        // {
+        //     if (j == 9 && packing_workers[j]->Busy())
+        //     {
+        //         j = 0;
+        //     }
+
+        //     if (packing_workers[j]->Busy())
+        //     {
+        //         continue;
+        //     }
+        auto package = new package_for_worker(this);
+
+        if (i < PACKAGE_SIZE)
+        {
+            package->set_last_package(true);
+            PACKAGE_SIZE = i;
+        }
+
+        package->Activate();
+
+        //     break;
+        // }
+    }
     Passivate();
+    cout << "---------- Back from packing" << endl;
+    cout << "\tPalette id: " << this->palette_id << endl;
+    cout << "\tPalette size: " << this->palette_done << endl;
 }
 
 // ########## Simulation proccess for the maintenance of the machine ##########
-maintenance::maintenance(machine *machine) : Process(1) {
+maintenance::maintenance(machine *machine) : Process(1)
+{
     this->machine_to_maintain = machine;
 }
 
-void maintenance::Behavior() {
+void maintenance::Behavior()
+{
     Seize(*(this->machine_to_maintain));
     // if ((this->machine_to_maintain)->get_name() == "Pressing machine")
     //     cout << "START " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_HOUR << endl;
@@ -239,11 +292,13 @@ void maintenance::Behavior() {
 }
 
 // ########## Simulation proccess for the break of the worker ##########
-break_worker::break_worker(worker *worker) : Process(1) {
+break_worker::break_worker(worker *worker) : Process(1)
+{
     this->worker_to_break = worker;
 }
 
-void break_worker::Behavior() {
+void break_worker::Behavior()
+{
     Seize(*(this->worker_to_break));
 
     // if ((this->worker_to_break)->get_name_of_worker() == "Pressing machine worker" || (this->worker_to_break)->get_name_of_worker() == "One sided sander worker" || (this->worker_to_break)->get_name_of_worker() == "Aligner worker")
@@ -257,13 +312,15 @@ void break_worker::Behavior() {
 }
 
 // ########## Simulation proccess for the order ##########
-Order::Order() : Process() {
+Order::Order() : Process()
+{
     this->order_size = static_cast<unsigned>(Uniform(ORDER_SIZE_MIN, ORDER_SIZE_MAX)); // random number of brake discs in the order
     this->amount_of_material = PIECE_MATERIAL_WEIGHT * this->order_size;               // amount of material needed for the order
     this->order_id = Order::order_count++;                                             // id of the order
 }
 
-void Order::Behavior() {
+void Order::Behavior()
+{
     cout << "Order:" << endl;
     cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
     cout << "\tOrder size: " << this->order_size << endl;
@@ -275,18 +332,24 @@ void Order::Behavior() {
 
     if (warehouse.use_material(this->amount_of_material)) // chcek if there is enough material for the order
     {
-        for (;;) {
-            if (this->order_size > 1000) {
+        for (;;)
+        {
+            if (this->order_size > 1000)
+            {
                 (new palette(1000))->Activate(); // create new palette
                 this->order_size -= 1000;
-            } else {
+            }
+            else
+            {
                 (new palette(this->order_size))->Activate();
                 this->order_size = 0;
                 break;
             }
         }
         // machines[0]->input_queue.Insert(this); // insert the order into the queue of the first machine
-    } else {
+    }
+    else
+    {
         // TODO: not enough material maybe the return is worng
         // cout << "ORDER N." << this->order_id << ": not enough material" << endl;
         return;
@@ -296,25 +359,29 @@ void Order::Behavior() {
 }
 
 // ########## Process of supply of material ##########
-void Supply::Behavior() {
-    // cout << "Supply of 5000 " << endl;
-
-    if (warehouse.add_material(MATERIAL_SUPPLY_WEIGHT)) {
-        cout << "SUPPLY: added 5000 kg of material" << endl;
-    } else {
+void Supply::Behavior()
+{
+    if (warehouse.add_material(MATERIAL_SUPPLY_WEIGHT))
+    {
+        // cout << "SUPPLY: added 5000 kg of material" << endl;
+    }
+    else
+    {
         return;
     }
 }
 
 // ########## Simulation proccess for machine work ##########
 
-void machine_work::Behavior() {
+void machine_work::Behavior()
+{
 
     Seize(*(this->machine_to_work));
     if (this->machine_to_work->get_machine_id() != OILING_MACHINE) // oiling machine does not need worker
         Seize(*(this->machine_to_work->get_worker()));
 
-    if (this->palette_in_machine->get_palette_id() == 0) {
+    if (this->palette_in_machine->get_palette_id() == 0)
+    {
         cout << "===========================START===========================" << endl;
         cout << "Machine: " << this->machine_to_work->get_name() << endl;
         cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
@@ -324,13 +391,15 @@ void machine_work::Behavior() {
 
     Wait((this->machine_to_work)->get_preparation_time());
 
-    switch (this->machine_to_work->get_machine_id()) {
+    switch (this->machine_to_work->get_machine_id())
+    {
     case PRESSING_MACHINE:
     case ONE_SIDED_SANDER:
     case ALIGNER:
     case DOUBLE_SIDED_SANDER:
     case OILING_MACHINE:
-        for (int i = this->palette_in_machine->get_palette_size(); i > 0; i--) {
+        for (int i = this->palette_in_machine->get_palette_size(); i > 0; i--)
+        {
             Wait(this->machine_to_work->get_piece_production_time());
             this->palette_in_machine->increment_palette_done();
         }
@@ -338,8 +407,10 @@ void machine_work::Behavior() {
     case STRETCHER:
         // redistribute paltte into packets by 15 pieces
         int PACKET_SIZE = 15;
-        for (int i = this->palette_in_machine->get_palette_size(); i > 0; i -= PACKET_SIZE) {
-            if (i < PACKET_SIZE) {
+        for (int i = this->palette_in_machine->get_palette_size(); i > 0; i -= PACKET_SIZE)
+        {
+            if (i < PACKET_SIZE)
+            {
                 PACKET_SIZE = i;
             }
 
@@ -350,10 +421,12 @@ void machine_work::Behavior() {
     }
 
     Release(*(this->machine_to_work));
+
     if (this->machine_to_work->get_machine_id() != OILING_MACHINE)
         Release(*(this->machine_to_work->get_worker()));
 
-    if (this->palette_in_machine->get_palette_id() == 0) {
+    if (this->palette_in_machine->get_palette_id() == 0)
+    {
         cout << "=============================END=========================" << endl;
         cout << "Machine: " << this->machine_to_work->get_name() << endl;
         cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
@@ -367,41 +440,119 @@ void machine_work::Behavior() {
 }
 
 // ########## Simulation proccess for packing ##########
-void packing::Behavior() {
+void package_for_worker::Behavior()
+{
+    cout << "===========================START===========================" << endl;
+    cout << "Packing: " << endl;
+    cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
+    cout << "\tPackage size: " << this->palette_to_pack->get_palette_size() << endl;
+    cout << "===========================================================" << endl;
 
-    for (int i=0; i < this->palette_to_pack->get_palette_size(); i++) {
-        Wait(1);
+    bool allWorkersBusy = true;
+for (int i = 0; i < 10; i++)
+{
+    cout << "Packing worker" << endl;
+    if (packing_workers[i]->Busy())
+    {
+        continue;
+    }
+    allWorkersBusy = false;
+    Seize(*packing_workers[i]);
+    Wait(3 * SECONDS_IN_MINUTE);
+    Release(*packing_workers[i]);
+
+    cout << "Packing worker: " << i << endl;
+
+    this->palette_to_pack->increment_palette_done(50);
+    break;
+}
+if (allWorkersBusy)
+{
+    // All workers are busy. You might want to handle this case.
+}
+
+    if (this->last_package)
+    {
+        this->palette_to_pack->Activate();
     }
 
-    // for(auto i: packing_workers) {
-    //     if (i->Busy()) {
-    //         continue;
-    //     }
-    //     Seize(*i);
-    //     break;
-    // }
+    cout << "=============================END=========================" << endl;
+    cout << "Packing" << endl;
+    cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
+    cout << "\tBrake discs done: " << this->palette_to_pack->get_palette_done() << endl;
+    cout << "=========================================================" << endl;
+}
+
+void packing::Behavior()
+{
+    cout << "===========================START===========================" << endl;
+    cout << "Packing: " << endl;
+    cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
+    cout << "\tPalette size: " << this->palette_to_pack->get_palette_size() << endl;
+    cout << "===========================================================" << endl;
+
+    int j = 0;
+    int PACKAGE_SIZE = 50;
+    for (int i = this->palette_to_pack->get_palette_size(); i > 0; i -= PACKAGE_SIZE)
+    {
+        for (j = 0; j < 10; j++)
+        {
+            if (packing_workers[j]->Busy())
+            {
+                continue;
+            }
+            break;
+        }
+        Seize(*packing_workers[j]);
+        cout << "Packing worker: " << j << endl;
+        if (i < PACKAGE_SIZE)
+        {
+            PACKAGE_SIZE = i;
+        }
+
+        this->palette_to_pack->increment_palette_done(PACKAGE_SIZE);
+        Release(*packing_workers[j]);
+    }
+
+    if (!this->input_queue.Empty())
+        this->input_queue.GetFirst()->Activate();
+
+    cout << "=============================END=========================" << endl;
+    cout << "Packing" << endl;
+    cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
+    cout << "\tBrake discs done: " << this->palette_to_pack->get_palette_done() << endl;
+    cout << "=========================================================" << endl;
 }
 
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########## Event for the maintenance ##########
-void maintenance_event::Behavior() {
+void maintenance_event::Behavior()
+{
     Activate(Time + Normal(SECONDS_IN_HOUR * 8, 0)); // schedule the next maintenance event after 8 hours
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
         (new maintenance(machines[i]))->Activate(); // activate the maintenance process for each machine
     }
 }
 
 // ########## Event for the break ##########
-void break_event::Behavior() {
+void break_event::Behavior()
+{
     Activate(Time + Normal(SECONDS_IN_HOUR * 2, SECONDS_IN_MINUTE * 3)); // schedule the next break event after 2 hours and with some +- 5 minute dispersion
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
         (new break_worker(workers[i]))->Activate(); // activate the break process for each worker
     }
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++)
+    {
         (new break_worker(packing_workers[i]))->Activate(); // activate the break process for each worker
     }
 
@@ -409,13 +560,15 @@ void break_event::Behavior() {
 }
 
 // ########## Generator for new orders ##########
-void order_event::Behavior() {
+void order_event::Behavior()
+{
     (new Order)->Activate();
     Activate(Time + Exponential(SECONDS_IN_HOUR * 8)); // order every 8 hours (exponential)
 }
 
 // ########## Generator for supplies ##########
-void supply_event::Behavior() {
+void supply_event::Behavior()
+{
     (new Supply)->Activate();
     Activate(Time + Normal(SECONDS_IN_DAY, SECONDS_IN_HOUR * 2)); // supply every 24 hours (normal)
 }
@@ -423,7 +576,8 @@ void supply_event::Behavior() {
 // --------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- FUNCS --------------------------------------------- //
 // --------------------------------------------------------------------------------------------------- //
-void fill_machine_array() {
+void fill_machine_array()
+{
     machines[0] = &pressing_machine;
     machines[1] = &one_sided_sander;
     machines[2] = &aligner;
@@ -432,7 +586,8 @@ void fill_machine_array() {
     machines[5] = &oiling_machine;
 }
 
-void fill_worker_array() {
+void fill_worker_array()
+{
     workers[0] = &pressing_machine_worker;
     workers[1] = &one_sided_sander_worker;
     workers[2] = &aligner_worker;
@@ -452,7 +607,8 @@ void fill_worker_array() {
     packing_workers[9] = &packing_worker_9;
 }
 
-void help(const char *prog_name) {
+void help(const char *prog_name)
+{
     cout << prog_name << " program implements the SHO of the engineering company." << endl;
     cout << "Subject: IMS" << endl;
     cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
@@ -461,10 +617,12 @@ void help(const char *prog_name) {
     cout << "          xpapad11@stud.fit.vutbr.cz " << endl;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
     // parameter handling
-    if (argc == 2 && strcmp(argv[1], "--help") == 0) {
+    if (argc == 2 && strcmp(argv[1], "--help") == 0)
+    {
         help(argv[0]);
         return 0;
     }

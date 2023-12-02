@@ -247,6 +247,24 @@ public:
     void Behavior();
 };
 
+// ########## Package ##########
+class package_for_worker : public Process {
+private:
+    palette *palette_to_pack;
+    bool last_package = false;
+
+public:
+    Queue input_queue;
+    
+    // constructor
+    package_for_worker(palette *palette) : Process(), palette_to_pack(palette), input_queue() {}
+
+    void set_last_package(bool last) { last_package = last; }
+
+    void Behavior();
+
+};
+
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########## Event for the maintenance ##########
