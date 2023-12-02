@@ -141,13 +141,17 @@ class palette : public Process {
 private:
     unsigned palette_size; // number of brake discs in the palette
     unsigned palette_done; // brake discs done from the palette
-    float startTime;       // time of the start of the palette
     unsigned palette_id;   // id of the palette
+    float startTime;       // time of the start of the palette
 
 public:
     static unsigned palette_count; // id of the palette
     // constructor
-    palette(unsigned amount_of_brake_discs);
+    palette(unsigned amount_of_brake_discs) : Process(),
+                                              palette_size(amount_of_brake_discs),
+                                              palette_done(0),
+                                              palette_id(palette::palette_count++),
+                                              startTime(Time) {}
 
     unsigned get_palette_size() { return palette_size; }
 
@@ -236,33 +240,18 @@ public:
     void Behavior();
 };
 
-class packing : public Process {
-private:
-    palette *palette_to_pack;
-
-public:
-    Queue input_queue;
-    packing(palette *palette) : Process(), palette_to_pack(palette), input_queue() {}
-
-    void Behavior();
-};
-
 // ########## Package ##########
 class package_for_worker : public Process {
 private:
     palette *palette_to_pack;
-    bool last_package = false;
+    int package_id;
+    unsigned size;
 
 public:
-    Queue input_queue;
-    
     // constructor
-    package_for_worker(palette *palette) : Process(), palette_to_pack(palette), input_queue() {}
-
-    void set_last_package(bool last) { last_package = last; }
+    package_for_worker(palette *palette, int id, unsigned s) : Process(), palette_to_pack(palette), package_id(id), size(s) {}
 
     void Behavior();
-
 };
 
 //----------------------------------------------- EVENTS -----------------------------------------------
