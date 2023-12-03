@@ -15,22 +15,23 @@
 #define SECONDS_IN_MINUTE 60
 #define PIECE_MATERIAL_WEIGHT 0.5         // in kg
 #define PICE_AFTER_PRODUCTION_WEIGHT 0.25 // TODO in kg
-#define MATERIAL_SUPPLY_WEIGHT 5000       // in kg
+#define MATERIAL_SUPPLY_WEIGHT 20000      // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
 
 #define BAD_PIECE_PERCENT 16
 
-#define PICE_REWORK_TIME 18 // in seconds
+#define PIECE_REWORK_TIME 18 // in seconds
 
 #define N_PACKING_WORKERS 10
 
-#define MATERIAL_WAREHOUSE_CAPACITY 20000      // in kg
+#define MATERIAL_WAREHOUSE_CAPACITY 50000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
 
 #define ORDER_SIZE_MIN 1000  // in pieces
 #define ORDER_SIZE_MAX 10000 // in pieces
 
 // error codes enum
-enum ErrCode {
+enum ErrCode
+{
     SUCCESS = 0,
     FAIL = 1
 };
@@ -59,7 +60,8 @@ float break_time[][1] = {
     {15 * SECONDS_IN_MINUTE}  // oiling machine worker
 };
 
-enum machine_indetifier {
+enum machine_indetifier
+{
     PRESSING_MACHINE = 0,
     ONE_SIDED_SANDER,
     ALIGNER,
@@ -68,8 +70,6 @@ enum machine_indetifier {
     OILING_MACHINE
 };
 
-// constants for the process of the making the brake discs
-
 // ------------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- CLASSES ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------- //
@@ -77,23 +77,38 @@ enum machine_indetifier {
 // ---------------------------------------------- STORES -------------------------------------------------- //
 
 //----------------------------------------------- FACILITIES ----------------------------------------------- //
-
-// ########## Workers ##########
-class worker : public Facility {
+class machine_work;
+// ########################################### Workers ###########################################
+class worker : public Facility
+{
 private:
     float break_time;
     std::string name_of_worker;
+    bool is_break = false;
+    machine_work *current_task;
 
 public:
     // constructor
     worker(float, std::string);
 
     float get_break_time();
+
+    void start_break();
+
+    void end_break();
+
+    bool is_break_time() { return is_break; };
+
+    void start_task(machine_work *task) { current_task = task; };
+
+    machine_work *get_current_task() { return current_task; };
+
     std::string get_name_of_worker();
 };
 
-// ########## Machines for producing brake discs ##########
-class machine : public Facility {
+// ########################################### Machines for producing brake discs ###########################################
+class machine : public Facility
+{
 private:
     float maintenance_time;
     float preparation_time;
@@ -121,8 +136,9 @@ public:
     worker *get_worker() { return machine_worker; }
 };
 
-// ########## Material warehouse ##########
-class material_warehouse : public Facility {
+// ########################################### Material warehouse ###########################################
+class material_warehouse : public Facility
+{
 private:
     float max;     // max capacity of the warehouse
     float current; // current capacity of the warehouse
@@ -140,9 +156,11 @@ public:
 
 //----------------------------------------------- PROCESSES -----------------------------------------------
 
-// ########## Simulation proccess for the production of the palettes of brake discs ##########
+// ########################################### Simulation proccess for the production of the palettes of brake discs ###########################################
 class Order;
-class palette : public Process {
+
+class palette : public Process
+{
 private:
     unsigned palette_size; // number of brake discs in the palette
     unsigned palette_done; // brake discs done from the palette
@@ -154,11 +172,11 @@ public:
     static unsigned palette_count; // id of the palette
     // constructor
     palette(unsigned amount_of_brake_discs, Order *po) : Process(),
-                                              palette_size(amount_of_brake_discs),
-                                              palette_done(0),
-                                              palette_id(palette::palette_count++),
-                                              startTime(Time),
-                                              order(po) {}
+                                                         palette_size(amount_of_brake_discs),
+                                                         palette_done(0),
+                                                         palette_id(palette::palette_count++),
+                                                         startTime(Time),
+                                                         order(po) {}
 
     unsigned get_palette_size() { return palette_size; }
 
@@ -174,8 +192,9 @@ public:
 // init the palette id
 unsigned palette::palette_count = 0;
 
-// ########## Simulation proccess for the maintenance of the machine ##########
-class maintenance : public Process {
+// ########################################### Simulation proccess for the maintenance of the machine ###########################################
+class maintenance : public Process
+{
 private:
     machine *machine_to_maintain;
 
@@ -186,8 +205,9 @@ public:
     void Behavior();
 };
 
-// ########## Simulation proccess for the break of the worker ##########
-class break_worker : public Process {
+// ########################################### Simulation proccess for the break of the worker ###########################################
+class break_worker : public Process
+{
 private:
     worker *worker_to_break;
 
@@ -198,15 +218,17 @@ public:
     void Behavior();
 };
 
-// ########## Process for triggering break for packaging workers  ##########
-class break_packaging_workers : public Process {
+// ########################################### Process for triggering break for packaging workers  ###########################################
+class break_packaging_workers : public Process
+{
 public:
     break_packaging_workers() : Process(1){};
     void Behavior();
 };
 
-// ########## Simulation proccess for the order ##########
-class Order : public Process {
+// ########################################### Simulation proccess for the order ###########################################
+class Order : public Process
+{
 private:
     unsigned order_size; // number of brake discs in the order
     unsigned pieces_done = 0;
@@ -227,28 +249,31 @@ public:
 };
 unsigned Order::order_count = 0;
 
-// ########## Simulation proccess for the new batch of brake discs from the order ##########
-class batch : public Process {
+// ########################################### Simulation proccess for the new batch of brake discs from the order ###########################################
+class batch : public Process
+{
 private:
     unsigned batch_size;           // number of brake discs in the batch to be made
     material_warehouse *warehouse; // pointer to the material warehouse
     Queue *orders;                 // pointer to the queue of orders waiting to be processed
-
-    float startTime; // time of the start of the batch
+    float startTime;               // time of the start of the batch
 
 public:
-    void Behavior(); // TODO
+    void Behavior();
 };
 
-// ########## Process of supply of material ##########
-class Supply : public Process {
+// ########################################### Process of supply of material ###########################################
+class Supply : public Process
+{
 public:
     Supply() : Process() {}
 
     void Behavior();
 };
 
-class machine_work : public Process {
+// ########################################### Process of machine work ###########################################
+class machine_work : public Process
+{
 private:
     machine *machine_to_work;
     palette *palette_in_machine;
@@ -259,8 +284,9 @@ public:
     void Behavior();
 };
 
-// ########## Package ##########
-class package_for_worker : public Process {
+// ########################################### Package ###########################################
+class package_for_worker : public Process
+{
 private:
     palette *palette_to_pack;
     int package_id;
@@ -275,23 +301,27 @@ public:
 
 //----------------------------------------------- EVENTS -----------------------------------------------
 
-// ########## Event for the maintenance ##########
-class maintenance_event : public Event {
+// ########################################### Event for the maintenance ###########################################
+class maintenance_event : public Event
+{
     void Behavior();
 };
 
-// ########## Event for the break ##########
-class break_event : public Event {
+// ########################################### Event for the break ###########################################
+class break_event : public Event
+{
     void Behavior();
 };
 
-// ########## Event for new orders ##########
-class order_event : public Event {
+// ########################################### Event for new orders ###########################################
+class order_event : public Event
+{
     void Behavior();
 };
 
-// ########## Event for supplies ##########
-class supply_event : public Event {
+// ########################################### Event for supplies ###########################################
+class supply_event : public Event
+{
     void Behavior();
 };
 

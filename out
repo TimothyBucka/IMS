@@ -1,0 +1,3097 @@
+-----------------------------
+Order:
+	Order id: 0
+	Order came in: 0
+	Order size: 6450
+	Amount of material: 3225
+-----------------------------
+-----------------------------
+Order:
+	Order id: 1
+	Order came in: 20.1342
+	Order size: 6000
+	Amount of material: 3000
+-----------------------------
+-----------------------------
+Order:
+	Order id: 2
+	Order came in: 37.8808
+	Order size: 5529
+	Amount of material: 2764.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 3
+	Order came in: 40.322
+	Order size: 7392
+	Amount of material: 3696
+-----------------------------
+ORDER N.3: not enough material
+-----------------------------
+Order:
+	Order id: 4
+	Order came in: 44.1189
+	Order size: 4067
+	Amount of material: 2033.5
+-----------------------------
+ORDER N.4: not enough material
+-----------------------------
+Order done:
+	Order id: 0
+	Order size: 6450
+	Order came in: 0
+	Order done in: 62.7604
+	Time in production: 62.7604
+-----------------------------
+-----------------------------
+Order:
+	Order id: 5
+	Order came in: 86.8771
+	Order size: 4599
+	Amount of material: 2299.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 1
+	Order size: 6000
+	Order came in: 20.1342
+	Order done in: 106.54
+	Time in production: 86.4056
+-----------------------------
+-----------------------------
+Order:
+	Order id: 6
+	Order came in: 132.087
+	Order size: 1216
+	Amount of material: 608
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 2
+	Order size: 5529
+	Order came in: 37.8808
+	Order done in: 145.823
+	Time in production: 107.943
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 5
+	Order size: 4599
+	Order came in: 86.8771
+	Order done in: 178.725
+	Time in production: 91.8478
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 6
+	Order size: 1216
+	Order came in: 132.087
+	Order done in: 187.574
+	Time in production: 55.4876
+-----------------------------
+-----------------------------
+Order:
+	Order id: 7
+	Order came in: 253.112
+	Order size: 6308
+	Amount of material: 3154
+-----------------------------
+-----------------------------
+Order:
+	Order id: 8
+	Order came in: 291.625
+	Order size: 3393
+	Amount of material: 1696.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 9
+	Order came in: 310.342
+	Order size: 5703
+	Amount of material: 2851.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 7
+	Order size: 6308
+	Order came in: 253.112
+	Order done in: 314.991
+	Time in production: 61.8795
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 8
+	Order size: 3393
+	Order came in: 291.625
+	Order done in: 339.558
+	Time in production: 47.9334
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 9
+	Order size: 5703
+	Order came in: 310.342
+	Order done in: 380.359
+	Time in production: 70.017
+-----------------------------
+-----------------------------
+Order:
+	Order id: 10
+	Order came in: 386.684
+	Order size: 1508
+	Amount of material: 754
+-----------------------------
+-----------------------------
+Order:
+	Order id: 11
+	Order came in: 392.639
+	Order size: 4667
+	Amount of material: 2333.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 12
+	Order came in: 404.885
+	Order size: 1507
+	Amount of material: 753.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 10
+	Order size: 1508
+	Order came in: 386.684
+	Order done in: 413.997
+	Time in production: 27.3133
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 11
+	Order size: 4667
+	Order came in: 392.639
+	Order done in: 447.321
+	Time in production: 54.6823
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 12
+	Order size: 1507
+	Order came in: 404.885
+	Order done in: 457.788
+	Time in production: 52.9035
+-----------------------------
+-----------------------------
+Order:
+	Order id: 13
+	Order came in: 460.056
+	Order size: 3804
+	Amount of material: 1902
+-----------------------------
+-----------------------------
+Order:
+	Order id: 14
+	Order came in: 489.354
+	Order size: 1905
+	Amount of material: 952.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 13
+	Order size: 3804
+	Order came in: 460.056
+	Order done in: 504.521
+	Time in production: 44.4651
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 14
+	Order size: 1905
+	Order came in: 489.354
+	Order done in: 519.309
+	Time in production: 29.9548
+-----------------------------
+-----------------------------
+Order:
+	Order id: 15
+	Order came in: 590.925
+	Order size: 6505
+	Amount of material: 3252.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 16
+	Order came in: 640.14
+	Order size: 8270
+	Amount of material: 4135
+-----------------------------
+-----------------------------
+Order:
+	Order id: 17
+	Order came in: 653.305
+	Order size: 4761
+	Amount of material: 2380.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 15
+	Order size: 6505
+	Order came in: 590.925
+	Order done in: 654.648
+	Time in production: 63.7231
+-----------------------------
+-----------------------------
+Order:
+	Order id: 18
+	Order came in: 676.228
+	Order size: 3436
+	Amount of material: 1718
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 16
+	Order size: 8270
+	Order came in: 640.14
+	Order done in: 716.359
+	Time in production: 76.2195
+-----------------------------
+-----------------------------
+Order:
+	Order id: 19
+	Order came in: 725.259
+	Order size: 4994
+	Amount of material: 2497
+-----------------------------
+-----------------------------
+Order:
+	Order id: 20
+	Order came in: 737.867
+	Order size: 8576
+	Amount of material: 4288
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 17
+	Order size: 4761
+	Order came in: 653.305
+	Order done in: 749.816
+	Time in production: 96.5109
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 18
+	Order size: 3436
+	Order came in: 676.228
+	Order done in: 774.541
+	Time in production: 98.3125
+-----------------------------
+-----------------------------
+Order:
+	Order id: 21
+	Order came in: 800.569
+	Order size: 3988
+	Amount of material: 1994
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 19
+	Order size: 4994
+	Order came in: 725.259
+	Order done in: 810.429
+	Time in production: 85.1698
+-----------------------------
+-----------------------------
+Order:
+	Order id: 22
+	Order came in: 821.761
+	Order size: 5745
+	Amount of material: 2872.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 20
+	Order size: 8576
+	Order came in: 737.867
+	Order done in: 871.368
+	Time in production: 133.502
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 21
+	Order size: 3988
+	Order came in: 800.569
+	Order done in: 900.094
+	Time in production: 99.5252
+-----------------------------
+-----------------------------
+Order:
+	Order id: 23
+	Order came in: 916.704
+	Order size: 3955
+	Amount of material: 1977.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 24
+	Order came in: 933.616
+	Order size: 6933
+	Amount of material: 3466.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 22
+	Order size: 5745
+	Order came in: 821.761
+	Order done in: 940.342
+	Time in production: 118.581
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 23
+	Order size: 3955
+	Order came in: 916.704
+	Order done in: 969.06
+	Time in production: 52.3559
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 24
+	Order size: 6933
+	Order came in: 933.616
+	Order done in: 1018.75
+	Time in production: 85.1311
+-----------------------------
+-----------------------------
+Order:
+	Order id: 25
+	Order came in: 1133.52
+	Order size: 4072
+	Amount of material: 2036
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 25
+	Order size: 4072
+	Order came in: 1133.52
+	Order done in: 1180.33
+	Time in production: 46.8145
+-----------------------------
+-----------------------------
+Order:
+	Order id: 26
+	Order came in: 1206.29
+	Order size: 3196
+	Amount of material: 1598
+-----------------------------
+-----------------------------
+Order:
+	Order id: 27
+	Order came in: 1214.77
+	Order size: 8781
+	Amount of material: 4390.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 28
+	Order came in: 1218.46
+	Order size: 4868
+	Amount of material: 2434
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 26
+	Order size: 3196
+	Order came in: 1206.29
+	Order done in: 1246.77
+	Time in production: 40.4758
+-----------------------------
+-----------------------------
+Order:
+	Order id: 29
+	Order came in: 1256.8
+	Order size: 1906
+	Amount of material: 953
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 27
+	Order size: 8781
+	Order came in: 1214.77
+	Order done in: 1308.72
+	Time in production: 93.9533
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 28
+	Order size: 4868
+	Order came in: 1218.46
+	Order done in: 1344.51
+	Time in production: 126.05
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 29
+	Order size: 1906
+	Order came in: 1256.8
+	Order done in: 1357.53
+	Time in production: 100.727
+-----------------------------
+-----------------------------
+Order:
+	Order id: 30
+	Order came in: 1388.28
+	Order size: 2460
+	Amount of material: 1230
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 30
+	Order size: 2460
+	Order came in: 1388.28
+	Order done in: 1422.7
+	Time in production: 34.4214
+-----------------------------
+-----------------------------
+Order:
+	Order id: 31
+	Order came in: 1428.06
+	Order size: 7165
+	Amount of material: 3582.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 32
+	Order came in: 1461.34
+	Order size: 6764
+	Amount of material: 3382
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 31
+	Order size: 7165
+	Order came in: 1428.06
+	Order done in: 1497.35
+	Time in production: 69.2934
+-----------------------------
+-----------------------------
+Order:
+	Order id: 33
+	Order came in: 1535.68
+	Order size: 4738
+	Amount of material: 2369
+-----------------------------
+-----------------------------
+Order:
+	Order id: 34
+	Order came in: 1541.54
+	Order size: 5208
+	Amount of material: 2604
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 32
+	Order size: 6764
+	Order came in: 1461.34
+	Order done in: 1545.69
+	Time in production: 84.3565
+-----------------------------
+-----------------------------
+Order:
+	Order id: 35
+	Order came in: 1577.32
+	Order size: 4578
+	Amount of material: 2289
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 33
+	Order size: 4738
+	Order came in: 1535.68
+	Order done in: 1586.77
+	Time in production: 51.0899
+-----------------------------
+-----------------------------
+Order:
+	Order id: 36
+	Order came in: 1611.12
+	Order size: 4160
+	Amount of material: 2080
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 34
+	Order size: 5208
+	Order came in: 1541.54
+	Order done in: 1624.35
+	Time in production: 82.8093
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 35
+	Order size: 4578
+	Order came in: 1577.32
+	Order done in: 1656.98
+	Time in production: 79.6636
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 36
+	Order size: 4160
+	Order came in: 1611.12
+	Order done in: 1686.73
+	Time in production: 75.6099
+-----------------------------
+-----------------------------
+Order:
+	Order id: 37
+	Order came in: 1705.26
+	Order size: 1147
+	Amount of material: 573.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 37
+	Order size: 1147
+	Order came in: 1705.26
+	Order done in: 1730.35
+	Time in production: 25.0897
+-----------------------------
+-----------------------------
+Order:
+	Order id: 38
+	Order came in: 1751.52
+	Order size: 3996
+	Amount of material: 1998
+-----------------------------
+-----------------------------
+Order:
+	Order id: 39
+	Order came in: 1762.03
+	Order size: 6527
+	Amount of material: 3263.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 40
+	Order came in: 1778.73
+	Order size: 9353
+	Amount of material: 4676.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 41
+	Order came in: 1784.19
+	Order size: 2290
+	Amount of material: 1145
+-----------------------------
+-----------------------------
+Order:
+	Order id: 42
+	Order came in: 1793.28
+	Order size: 1019
+	Amount of material: 509.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 38
+	Order size: 3996
+	Order came in: 1751.52
+	Order done in: 1797.63
+	Time in production: 46.1087
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 39
+	Order size: 6527
+	Order came in: 1762.03
+	Order done in: 1843.92
+	Time in production: 81.8889
+-----------------------------
+-----------------------------
+Order:
+	Order id: 43
+	Order came in: 1852.93
+	Order size: 1620
+	Amount of material: 810
+-----------------------------
+-----------------------------
+Order:
+	Order id: 44
+	Order came in: 1869.35
+	Order size: 2035
+	Amount of material: 1017.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 40
+	Order size: 9353
+	Order came in: 1778.73
+	Order done in: 1911.47
+	Time in production: 132.736
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 41
+	Order size: 2290
+	Order came in: 1784.19
+	Order done in: 1928.42
+	Time in production: 144.234
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 42
+	Order size: 1019
+	Order came in: 1793.28
+	Order done in: 1936.37
+	Time in production: 143.088
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 43
+	Order size: 1620
+	Order came in: 1852.93
+	Order done in: 1947.78
+	Time in production: 94.8431
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 44
+	Order size: 2035
+	Order came in: 1869.35
+	Order done in: 1962.76
+	Time in production: 93.412
+-----------------------------
+-----------------------------
+Order:
+	Order id: 45
+	Order came in: 2045.92
+	Order size: 2953
+	Amount of material: 1476.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 45
+	Order size: 2953
+	Order came in: 2045.92
+	Order done in: 2084.81
+	Time in production: 38.8934
+-----------------------------
+-----------------------------
+Order:
+	Order id: 46
+	Order came in: 2148.09
+	Order size: 1119
+	Amount of material: 559.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 46
+	Order size: 1119
+	Order came in: 2148.09
+	Order done in: 2172.9
+	Time in production: 24.8017
+-----------------------------
+-----------------------------
+Order:
+	Order id: 47
+	Order came in: 2194.98
+	Order size: 5910
+	Amount of material: 2955
+-----------------------------
+-----------------------------
+Order:
+	Order id: 48
+	Order came in: 2247.22
+	Order size: 3034
+	Amount of material: 1517
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 47
+	Order size: 5910
+	Order came in: 2194.98
+	Order done in: 2254.05
+	Time in production: 59.0701
+-----------------------------
+-----------------------------
+Order:
+	Order id: 49
+	Order came in: 2285.61
+	Order size: 8804
+	Amount of material: 4402
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 48
+	Order size: 3034
+	Order came in: 2247.22
+	Order done in: 2286.74
+	Time in production: 39.5114
+-----------------------------
+-----------------------------
+Order:
+	Order id: 50
+	Order came in: 2290.04
+	Order size: 7085
+	Amount of material: 3542.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 49
+	Order size: 8804
+	Order came in: 2285.61
+	Order done in: 2366.34
+	Time in production: 80.7278
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 50
+	Order size: 7085
+	Order came in: 2290.04
+	Order done in: 2418.39
+	Time in production: 128.341
+-----------------------------
+-----------------------------
+Order:
+	Order id: 51
+	Order came in: 2521
+	Order size: 9136
+	Amount of material: 4568
+-----------------------------
+-----------------------------
+Order:
+	Order id: 52
+	Order came in: 2555.2
+	Order size: 5075
+	Amount of material: 2537.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 51
+	Order size: 9136
+	Order came in: 2521
+	Order done in: 2603.16
+	Time in production: 82.1635
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 52
+	Order size: 5075
+	Order came in: 2555.2
+	Order done in: 2638.86
+	Time in production: 83.6588
+-----------------------------
+-----------------------------
+Order:
+	Order id: 53
+	Order came in: 2703.41
+	Order size: 9297
+	Amount of material: 4648.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 53
+	Order size: 9297
+	Order came in: 2703.41
+	Order done in: 2786.65
+	Time in production: 83.2417
+-----------------------------
+-----------------------------
+Order:
+	Order id: 54
+	Order came in: 2825.6
+	Order size: 9221
+	Amount of material: 4610.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 55
+	Order came in: 2835.46
+	Order size: 8989
+	Amount of material: 4494.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 54
+	Order size: 9221
+	Order came in: 2825.6
+	Order done in: 2908.32
+	Time in production: 82.72
+-----------------------------
+-----------------------------
+Order:
+	Order id: 56
+	Order came in: 2948.31
+	Order size: 4962
+	Amount of material: 2481
+-----------------------------
+-----------------------------
+Order:
+	Order id: 57
+	Order came in: 2948.36
+	Order size: 8175
+	Amount of material: 4087.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 58
+	Order came in: 2948.98
+	Order size: 9128
+	Amount of material: 4564
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 55
+	Order size: 8989
+	Order came in: 2835.46
+	Order done in: 2972.36
+	Time in production: 136.906
+-----------------------------
+-----------------------------
+Order:
+	Order id: 59
+	Order came in: 2976.17
+	Order size: 2276
+	Amount of material: 1138
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 56
+	Order size: 4962
+	Order came in: 2948.31
+	Order done in: 3008.37
+	Time in production: 60.0593
+-----------------------------
+-----------------------------
+Order:
+	Order id: 60
+	Order came in: 3057.58
+	Order size: 3556
+	Amount of material: 1778
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 57
+	Order size: 8175
+	Order came in: 2948.36
+	Order done in: 3067.08
+	Time in production: 118.716
+-----------------------------
+-----------------------------
+Order:
+	Order id: 61
+	Order came in: 3089.31
+	Order size: 9342
+	Amount of material: 4671
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 58
+	Order size: 9128
+	Order came in: 2948.98
+	Order done in: 3132.58
+	Time in production: 183.596
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 59
+	Order size: 2276
+	Order came in: 2976.17
+	Order done in: 3148.41
+	Time in production: 172.241
+-----------------------------
+-----------------------------
+Order:
+	Order id: 62
+	Order came in: 3156.45
+	Order size: 7742
+	Amount of material: 3871
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 60
+	Order size: 3556
+	Order came in: 3057.58
+	Order done in: 3174.5
+	Time in production: 116.927
+-----------------------------
+-----------------------------
+Order:
+	Order id: 63
+	Order came in: 3233.65
+	Order size: 6286
+	Amount of material: 3143
+-----------------------------
+-----------------------------
+Order:
+	Order id: 64
+	Order came in: 3237.45
+	Order size: 3930
+	Amount of material: 1965
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 61
+	Order size: 9342
+	Order came in: 3089.31
+	Order done in: 3240.82
+	Time in production: 151.515
+-----------------------------
+-----------------------------
+Order:
+	Order id: 65
+	Order came in: 3268.03
+	Order size: 3784
+	Amount of material: 1892
+-----------------------------
+-----------------------------
+Order:
+	Order id: 66
+	Order came in: 3272.16
+	Order size: 7501
+	Amount of material: 3750.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 62
+	Order size: 7742
+	Order came in: 3156.45
+	Order done in: 3296.74
+	Time in production: 140.285
+-----------------------------
+-----------------------------
+Order:
+	Order id: 67
+	Order came in: 3297.91
+	Order size: 4578
+	Amount of material: 2289
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 63
+	Order size: 6286
+	Order came in: 3233.65
+	Order done in: 3341.88
+	Time in production: 108.231
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 64
+	Order size: 3930
+	Order came in: 3237.45
+	Order done in: 3370.35
+	Time in production: 132.894
+-----------------------------
+-----------------------------
+Order:
+	Order id: 68
+	Order came in: 3394.62
+	Order size: 9516
+	Amount of material: 4758
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 65
+	Order size: 3784
+	Order came in: 3268.03
+	Order done in: 3396.78
+	Time in production: 128.75
+-----------------------------
+-----------------------------
+Order:
+	Order id: 69
+	Order came in: 3398.67
+	Order size: 3845
+	Amount of material: 1922.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 66
+	Order size: 7501
+	Order came in: 3272.16
+	Order done in: 3450.52
+	Time in production: 178.36
+-----------------------------
+-----------------------------
+Order:
+	Order id: 70
+	Order came in: 3466.51
+	Order size: 1650
+	Amount of material: 825
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 67
+	Order size: 4578
+	Order came in: 3297.91
+	Order done in: 3483.66
+	Time in production: 185.76
+-----------------------------
+-----------------------------
+Order:
+	Order id: 71
+	Order came in: 3539.86
+	Order size: 7473
+	Amount of material: 3736.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 68
+	Order size: 9516
+	Order came in: 3394.62
+	Order done in: 3552.38
+	Time in production: 157.757
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 69
+	Order size: 3845
+	Order came in: 3398.67
+	Order done in: 3579.3
+	Time in production: 180.625
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 70
+	Order size: 1650
+	Order came in: 3466.51
+	Order done in: 3591.14
+	Time in production: 124.626
+-----------------------------
+-----------------------------
+Order:
+	Order id: 72
+	Order came in: 3607.52
+	Order size: 5249
+	Amount of material: 2624.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 73
+	Order came in: 3619.36
+	Order size: 3276
+	Amount of material: 1638
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 71
+	Order size: 7473
+	Order came in: 3539.86
+	Order done in: 3643.75
+	Time in production: 103.893
+-----------------------------
+-----------------------------
+Order:
+	Order id: 74
+	Order came in: 3651.22
+	Order size: 6390
+	Amount of material: 3195
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 72
+	Order size: 5249
+	Order came in: 3607.52
+	Order done in: 3682.57
+	Time in production: 75.0544
+-----------------------------
+-----------------------------
+Order:
+	Order id: 75
+	Order came in: 3687.97
+	Order size: 2785
+	Amount of material: 1392.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 73
+	Order size: 3276
+	Order came in: 3619.36
+	Order done in: 3706.35
+	Time in production: 86.9891
+-----------------------------
+-----------------------------
+Order:
+	Order id: 76
+	Order came in: 3718.96
+	Order size: 7890
+	Amount of material: 3945
+-----------------------------
+-----------------------------
+Order:
+	Order id: 77
+	Order came in: 3741.51
+	Order size: 7666
+	Amount of material: 3833
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 74
+	Order size: 6390
+	Order came in: 3651.22
+	Order done in: 3751.46
+	Time in production: 100.239
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 75
+	Order size: 2785
+	Order came in: 3687.97
+	Order done in: 3771.57
+	Time in production: 83.6009
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 76
+	Order size: 7890
+	Order came in: 3718.96
+	Order done in: 3828.46
+	Time in production: 109.503
+-----------------------------
+-----------------------------
+Order:
+	Order id: 78
+	Order came in: 3840.99
+	Order size: 2965
+	Amount of material: 1482.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 77
+	Order size: 7666
+	Order came in: 3741.51
+	Order done in: 3883.04
+	Time in production: 141.535
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 78
+	Order size: 2965
+	Order came in: 3840.99
+	Order done in: 3903.98
+	Time in production: 62.9988
+-----------------------------
+-----------------------------
+Order:
+	Order id: 79
+	Order came in: 3914.8
+	Order size: 2249
+	Amount of material: 1124.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 80
+	Order came in: 3925.6
+	Order size: 4089
+	Amount of material: 2044.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 81
+	Order came in: 3927.07
+	Order size: 8254
+	Amount of material: 4127
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 79
+	Order size: 2249
+	Order came in: 3914.8
+	Order done in: 3948.59
+	Time in production: 33.7894
+-----------------------------
+-----------------------------
+Order:
+	Order id: 82
+	Order came in: 3953.06
+	Order size: 3569
+	Amount of material: 1784.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 80
+	Order size: 4089
+	Order came in: 3925.6
+	Order done in: 3977.97
+	Time in production: 52.3699
+-----------------------------
+-----------------------------
+Order:
+	Order id: 83
+	Order came in: 3993.51
+	Order size: 1413
+	Amount of material: 706.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 84
+	Order came in: 4001.52
+	Order size: 8792
+	Amount of material: 4396
+-----------------------------
+-----------------------------
+Order:
+	Order id: 85
+	Order came in: 4008.85
+	Order size: 8941
+	Amount of material: 4470.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 81
+	Order size: 8254
+	Order came in: 3927.07
+	Order done in: 4036.95
+	Time in production: 109.873
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 82
+	Order size: 3569
+	Order came in: 3953.06
+	Order done in: 4062.63
+	Time in production: 109.565
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 83
+	Order size: 1413
+	Order came in: 3993.51
+	Order done in: 4072.31
+	Time in production: 78.7999
+-----------------------------
+-----------------------------
+Order:
+	Order id: 86
+	Order came in: 4092.59
+	Order size: 8917
+	Amount of material: 4458.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 84
+	Order size: 8792
+	Order came in: 4001.52
+	Order done in: 4135.36
+	Time in production: 133.846
+-----------------------------
+-----------------------------
+Order:
+	Order id: 87
+	Order came in: 4163.44
+	Order size: 1010
+	Amount of material: 505
+-----------------------------
+-----------------------------
+Order:
+	Order id: 88
+	Order came in: 4168.62
+	Order size: 2654
+	Amount of material: 1327
+-----------------------------
+-----------------------------
+Order:
+	Order id: 89
+	Order came in: 4184.64
+	Order size: 8722
+	Amount of material: 4361
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 85
+	Order size: 8941
+	Order came in: 4008.85
+	Order done in: 4199.02
+	Time in production: 190.165
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 86
+	Order size: 8917
+	Order came in: 4092.59
+	Order done in: 4262.68
+	Time in production: 170.093
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 87
+	Order size: 1010
+	Order came in: 4163.44
+	Order done in: 4270.35
+	Time in production: 106.911
+-----------------------------
+-----------------------------
+Order:
+	Order id: 90
+	Order came in: 4283.73
+	Order size: 2946
+	Amount of material: 1473
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 88
+	Order size: 2654
+	Order came in: 4168.62
+	Order done in: 4289.06
+	Time in production: 120.443
+-----------------------------
+-----------------------------
+Order:
+	Order id: 91
+	Order came in: 4297.08
+	Order size: 3548
+	Amount of material: 1774
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 89
+	Order size: 8722
+	Order came in: 4184.64
+	Order done in: 4351.62
+	Time in production: 166.978
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 90
+	Order size: 2946
+	Order came in: 4283.73
+	Order done in: 4372.36
+	Time in production: 88.6359
+-----------------------------
+-----------------------------
+Order:
+	Order id: 92
+	Order came in: 4385.48
+	Order size: 4614
+	Amount of material: 2307
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 91
+	Order size: 3548
+	Order came in: 4297.08
+	Order done in: 4397.99
+	Time in production: 100.91
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 92
+	Order size: 4614
+	Order came in: 4385.48
+	Order done in: 4434.91
+	Time in production: 49.4312
+-----------------------------
+-----------------------------
+Order:
+	Order id: 93
+	Order came in: 4463.75
+	Order size: 6798
+	Amount of material: 3399
+-----------------------------
+-----------------------------
+Order:
+	Order id: 94
+	Order came in: 4472.83
+	Order size: 6022
+	Amount of material: 3011
+-----------------------------
+-----------------------------
+Order:
+	Order id: 95
+	Order came in: 4492.39
+	Order size: 2090
+	Amount of material: 1045
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 93
+	Order size: 6798
+	Order came in: 4463.75
+	Order done in: 4529.9
+	Time in production: 66.1525
+-----------------------------
+-----------------------------
+Order:
+	Order id: 96
+	Order came in: 4550.69
+	Order size: 1940
+	Amount of material: 970
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 94
+	Order size: 6022
+	Order came in: 4472.83
+	Order done in: 4572.82
+	Time in production: 99.986
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 95
+	Order size: 2090
+	Order came in: 4492.39
+	Order done in: 4587.98
+	Time in production: 95.5842
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 96
+	Order size: 1940
+	Order came in: 4550.69
+	Order done in: 4601.98
+	Time in production: 51.2888
+-----------------------------
+-----------------------------
+Order:
+	Order id: 97
+	Order came in: 4641.1
+	Order size: 8132
+	Amount of material: 4066
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 97
+	Order size: 8132
+	Order came in: 4641.1
+	Order done in: 4716.51
+	Time in production: 75.4168
+-----------------------------
+-----------------------------
+Order:
+	Order id: 98
+	Order came in: 4796.51
+	Order size: 4188
+	Amount of material: 2094
+-----------------------------
+-----------------------------
+Order:
+	Order id: 99
+	Order came in: 4824.87
+	Order size: 6153
+	Amount of material: 3076.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 98
+	Order size: 4188
+	Order came in: 4796.51
+	Order done in: 4843.62
+	Time in production: 47.1049
+-----------------------------
+-----------------------------
+Order:
+	Order id: 100
+	Order came in: 4868.22
+	Order size: 4672
+	Amount of material: 2336
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 99
+	Order size: 6153
+	Order came in: 4824.87
+	Order done in: 4887.06
+	Time in production: 62.1896
+-----------------------------
+-----------------------------
+Order:
+	Order id: 101
+	Order came in: 4893.52
+	Order size: 6090
+	Amount of material: 3045
+-----------------------------
+-----------------------------
+Order:
+	Order id: 102
+	Order came in: 4905.57
+	Order size: 9390
+	Amount of material: 4695
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 100
+	Order size: 4672
+	Order came in: 4868.22
+	Order done in: 4920.33
+	Time in production: 52.1111
+-----------------------------
+-----------------------------
+Order:
+	Order id: 103
+	Order came in: 4935.37
+	Order size: 6735
+	Amount of material: 3367.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 101
+	Order size: 6090
+	Order came in: 4893.52
+	Order done in: 4964.37
+	Time in production: 70.8512
+-----------------------------
+-----------------------------
+Order:
+	Order id: 104
+	Order came in: 4973.79
+	Order size: 5929
+	Amount of material: 2964.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 105
+	Order came in: 5002.51
+	Order size: 2405
+	Amount of material: 1202.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 102
+	Order size: 9390
+	Order came in: 4905.57
+	Order done in: 5031.07
+	Time in production: 125.502
+-----------------------------
+-----------------------------
+Order:
+	Order id: 106
+	Order came in: 5070.39
+	Order size: 7470
+	Amount of material: 3735
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 103
+	Order size: 6735
+	Order came in: 4935.37
+	Order done in: 5079.71
+	Time in production: 144.343
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 104
+	Order size: 5929
+	Order came in: 4973.79
+	Order done in: 5122.34
+	Time in production: 148.546
+-----------------------------
+-----------------------------
+Order:
+	Order id: 107
+	Order came in: 5125.01
+	Order size: 3603
+	Amount of material: 1801.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 105
+	Order size: 2405
+	Order came in: 5002.51
+	Order done in: 5138.79
+	Time in production: 136.276
+-----------------------------
+-----------------------------
+Order:
+	Order id: 108
+	Order came in: 5174.69
+	Order size: 6323
+	Amount of material: 3161.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 106
+	Order size: 7470
+	Order came in: 5070.39
+	Order done in: 5192.31
+	Time in production: 121.928
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 107
+	Order size: 3603
+	Order came in: 5125.01
+	Order done in: 5218.35
+	Time in production: 93.3429
+-----------------------------
+-----------------------------
+Order:
+	Order id: 109
+	Order came in: 5225.97
+	Order size: 4993
+	Amount of material: 2496.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 110
+	Order came in: 5248.41
+	Order size: 6339
+	Amount of material: 3169.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 108
+	Order size: 6323
+	Order came in: 5174.69
+	Order done in: 5263.92
+	Time in production: 89.2244
+-----------------------------
+-----------------------------
+Order:
+	Order id: 111
+	Order came in: 5269.76
+	Order size: 9650
+	Amount of material: 4825
+-----------------------------
+-----------------------------
+Order:
+	Order id: 112
+	Order came in: 5282.84
+	Order size: 6545
+	Amount of material: 3272.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 113
+	Order came in: 5293.55
+	Order size: 4428
+	Amount of material: 2214
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 109
+	Order size: 4993
+	Order came in: 5225.97
+	Order done in: 5299.68
+	Time in production: 73.715
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 110
+	Order size: 6339
+	Order came in: 5248.41
+	Order done in: 5344.5
+	Time in production: 96.0895
+-----------------------------
+-----------------------------
+Order:
+	Order id: 114
+	Order came in: 5347.87
+	Order size: 6710
+	Amount of material: 3355
+-----------------------------
+-----------------------------
+Order:
+	Order id: 115
+	Order came in: 5392.36
+	Order size: 6104
+	Amount of material: 3052
+-----------------------------
+-----------------------------
+Order:
+	Order id: 116
+	Order came in: 5393.5
+	Order size: 4881
+	Amount of material: 2440.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 111
+	Order size: 9650
+	Order came in: 5269.76
+	Order done in: 5414.52
+	Time in production: 144.766
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 112
+	Order size: 6545
+	Order came in: 5282.84
+	Order done in: 5460.61
+	Time in production: 177.769
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 113
+	Order size: 4428
+	Order came in: 5293.55
+	Order done in: 5493.21
+	Time in production: 199.662
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 114
+	Order size: 6710
+	Order came in: 5347.87
+	Order done in: 5541.71
+	Time in production: 193.841
+-----------------------------
+-----------------------------
+Order:
+	Order id: 117
+	Order came in: 5567.17
+	Order size: 9844
+	Amount of material: 4922
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 115
+	Order size: 6104
+	Order came in: 5392.36
+	Order done in: 5586.36
+	Time in production: 193.993
+-----------------------------
+-----------------------------
+Order:
+	Order id: 118
+	Order came in: 5602.68
+	Order size: 5239
+	Amount of material: 2619.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 116
+	Order size: 4881
+	Order came in: 5393.5
+	Order done in: 5620.95
+	Time in production: 227.445
+-----------------------------
+-----------------------------
+Order:
+	Order id: 119
+	Order came in: 5686.76
+	Order size: 5269
+	Amount of material: 2634.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 117
+	Order size: 9844
+	Order came in: 5567.17
+	Order done in: 5691.1
+	Time in production: 123.929
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 118
+	Order size: 5239
+	Order came in: 5602.68
+	Order done in: 5727.67
+	Time in production: 124.991
+-----------------------------
+-----------------------------
+Order:
+	Order id: 120
+	Order came in: 5748.37
+	Order size: 6621
+	Amount of material: 3310.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 121
+	Order came in: 5759.39
+	Order size: 3316
+	Amount of material: 1658
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 119
+	Order size: 5269
+	Order came in: 5686.76
+	Order done in: 5766.05
+	Time in production: 79.292
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 120
+	Order size: 6621
+	Order came in: 5748.37
+	Order done in: 5812.86
+	Time in production: 64.4836
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 121
+	Order size: 3316
+	Order came in: 5759.39
+	Order done in: 5837.18
+	Time in production: 77.79
+-----------------------------
+-----------------------------
+Order:
+	Order id: 122
+	Order came in: 5859.13
+	Order size: 6620
+	Amount of material: 3310
+-----------------------------
+-----------------------------
+Order:
+	Order id: 123
+	Order came in: 5885.69
+	Order size: 6698
+	Amount of material: 3349
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 122
+	Order size: 6620
+	Order came in: 5859.13
+	Order done in: 5923.61
+	Time in production: 64.4819
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 123
+	Order size: 6698
+	Order came in: 5885.69
+	Order done in: 5971.71
+	Time in production: 86.0157
+-----------------------------
+-----------------------------
+Order:
+	Order id: 124
+	Order came in: 6061.33
+	Order size: 4703
+	Amount of material: 2351.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 124
+	Order size: 4703
+	Order came in: 6061.33
+	Order done in: 6112.33
+	Time in production: 51.004
+-----------------------------
+-----------------------------
+Order:
+	Order id: 125
+	Order came in: 6117.98
+	Order size: 9653
+	Amount of material: 4826.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 126
+	Order came in: 6139.11
+	Order size: 1526
+	Amount of material: 763
+-----------------------------
+-----------------------------
+Order:
+	Order id: 127
+	Order came in: 6167.88
+	Order size: 4265
+	Amount of material: 2132.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 125
+	Order size: 9653
+	Order came in: 6117.98
+	Order done in: 6204.47
+	Time in production: 86.493
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 126
+	Order size: 1526
+	Order came in: 6139.11
+	Order done in: 6215.98
+	Time in production: 76.8723
+-----------------------------
+-----------------------------
+Order:
+	Order id: 128
+	Order came in: 6238.87
+	Order size: 4873
+	Amount of material: 2436.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 129
+	Order came in: 6244.18
+	Order size: 7424
+	Amount of material: 3712
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 127
+	Order size: 4265
+	Order came in: 6167.88
+	Order done in: 6246.34
+	Time in production: 78.4624
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 128
+	Order size: 4873
+	Order came in: 6238.87
+	Order done in: 6290.98
+	Time in production: 52.1165
+-----------------------------
+-----------------------------
+Order:
+	Order id: 130
+	Order came in: 6322.56
+	Order size: 4457
+	Amount of material: 2228.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 129
+	Order size: 7424
+	Order came in: 6244.18
+	Order done in: 6343.77
+	Time in production: 99.5874
+-----------------------------
+-----------------------------
+Order:
+	Order id: 131
+	Order came in: 6372.83
+	Order size: 9755
+	Amount of material: 4877.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 130
+	Order size: 4457
+	Order came in: 6322.56
+	Order done in: 6375.92
+	Time in production: 53.3645
+-----------------------------
+-----------------------------
+Order:
+	Order id: 132
+	Order came in: 6449.13
+	Order size: 1187
+	Amount of material: 593.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 133
+	Order came in: 6456.9
+	Order size: 1669
+	Amount of material: 834.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 131
+	Order size: 9755
+	Order came in: 6372.83
+	Order done in: 6459.96
+	Time in production: 87.1361
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 132
+	Order size: 1187
+	Order came in: 6449.13
+	Order done in: 6474.37
+	Time in production: 25.2375
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 133
+	Order size: 1669
+	Order came in: 6456.9
+	Order done in: 6485.69
+	Time in production: 28.7884
+-----------------------------
+-----------------------------
+Order:
+	Order id: 134
+	Order came in: 6509.52
+	Order size: 3726
+	Amount of material: 1863
+-----------------------------
+-----------------------------
+Order:
+	Order id: 135
+	Order came in: 6552.3
+	Order size: 2027
+	Amount of material: 1013.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 134
+	Order size: 3726
+	Order came in: 6509.52
+	Order done in: 6553.88
+	Time in production: 44.3607
+-----------------------------
+-----------------------------
+Order:
+	Order id: 136
+	Order came in: 6572.1
+	Order size: 7597
+	Amount of material: 3798.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 137
+	Order came in: 6573.88
+	Order size: 1175
+	Amount of material: 587.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 135
+	Order size: 2027
+	Order came in: 6552.3
+	Order done in: 6583.76
+	Time in production: 31.4613
+-----------------------------
+-----------------------------
+Order:
+	Order id: 138
+	Order came in: 6630.08
+	Order size: 8796
+	Amount of material: 4398
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 136
+	Order size: 7597
+	Order came in: 6572.1
+	Order done in: 6643.54
+	Time in production: 71.4456
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 137
+	Order size: 1175
+	Order came in: 6573.88
+	Order done in: 6652.82
+	Time in production: 78.9398
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 138
+	Order size: 8796
+	Order came in: 6630.08
+	Order done in: 6715.84
+	Time in production: 85.7627
+-----------------------------
+-----------------------------
+Order:
+	Order id: 139
+	Order came in: 6827.71
+	Order size: 9568
+	Amount of material: 4784
+-----------------------------
+-----------------------------
+Order:
+	Order id: 140
+	Order came in: 6834.22
+	Order size: 9575
+	Amount of material: 4787.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 141
+	Order came in: 6835.64
+	Order size: 4481
+	Amount of material: 2240.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 142
+	Order came in: 6868.15
+	Order size: 9896
+	Amount of material: 4948
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 139
+	Order size: 9568
+	Order came in: 6827.71
+	Order done in: 6913.44
+	Time in production: 85.7383
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 140
+	Order size: 9575
+	Order came in: 6834.22
+	Order done in: 6982.01
+	Time in production: 147.784
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 141
+	Order size: 4481
+	Order came in: 6835.64
+	Order done in: 7014.28
+	Time in production: 178.64
+-----------------------------
+-----------------------------
+Order:
+	Order id: 143
+	Order came in: 7071.82
+	Order size: 8695
+	Amount of material: 4347.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 144
+	Order came in: 7072.49
+	Order size: 3651
+	Amount of material: 1825.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 145
+	Order came in: 7073.74
+	Order size: 3937
+	Amount of material: 1968.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 142
+	Order size: 9896
+	Order came in: 6868.15
+	Order done in: 7085.34
+	Time in production: 217.19
+-----------------------------
+-----------------------------
+Order:
+	Order id: 146
+	Order came in: 7094.23
+	Order size: 2238
+	Amount of material: 1119
+-----------------------------
+-----------------------------
+Order:
+	Order id: 147
+	Order came in: 7115.39
+	Order size: 6417
+	Amount of material: 3208.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 148
+	Order came in: 7121.35
+	Order size: 7873
+	Amount of material: 3936.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 149
+	Order came in: 7131.14
+	Order size: 6856
+	Amount of material: 3428
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 143
+	Order size: 8695
+	Order came in: 7071.82
+	Order done in: 7151.85
+	Time in production: 80.0276
+-----------------------------
+-----------------------------
+Order:
+	Order id: 150
+	Order came in: 7168.94
+	Order size: 9488
+	Amount of material: 4744
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 144
+	Order size: 3651
+	Order came in: 7072.49
+	Order done in: 7178
+	Time in production: 105.503
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 145
+	Order size: 3937
+	Order came in: 7073.74
+	Order done in: 7206.1
+	Time in production: 132.354
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 146
+	Order size: 2238
+	Order came in: 7094.23
+	Order done in: 7222.35
+	Time in production: 128.117
+-----------------------------
+-----------------------------
+Order:
+	Order id: 151
+	Order came in: 7224.86
+	Order size: 2287
+	Amount of material: 1143.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 152
+	Order came in: 7240.48
+	Order size: 6230
+	Amount of material: 3115
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 147
+	Order size: 6417
+	Order came in: 7115.39
+	Order done in: 7267.67
+	Time in production: 152.285
+-----------------------------
+-----------------------------
+Order:
+	Order id: 153
+	Order came in: 7269.54
+	Order size: 9904
+	Amount of material: 4952
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 148
+	Order size: 7873
+	Order came in: 7121.35
+	Order done in: 7324.66
+	Time in production: 203.302
+-----------------------------
+-----------------------------
+Order:
+	Order id: 154
+	Order came in: 7331.04
+	Order size: 1040
+	Amount of material: 520
+-----------------------------
+-----------------------------
+Order:
+	Order id: 155
+	Order came in: 7334.92
+	Order size: 2950
+	Amount of material: 1475
+-----------------------------
+-----------------------------
+Order:
+	Order id: 156
+	Order came in: 7349.42
+	Order size: 6845
+	Amount of material: 3422.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 149
+	Order size: 6856
+	Order came in: 7131.14
+	Order done in: 7374.34
+	Time in production: 243.202
+-----------------------------
+-----------------------------
+Order:
+	Order id: 157
+	Order came in: 7425.62
+	Order size: 6403
+	Amount of material: 3201.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 150
+	Order size: 9488
+	Order came in: 7168.94
+	Order done in: 7442.31
+	Time in production: 273.368
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 151
+	Order size: 2287
+	Order came in: 7224.86
+	Order done in: 7459.42
+	Time in production: 234.554
+-----------------------------
+-----------------------------
+Order:
+	Order id: 158
+	Order came in: 7468.75
+	Order size: 4934
+	Amount of material: 2467
+-----------------------------
+-----------------------------
+Order:
+	Order id: 159
+	Order came in: 7477.68
+	Order size: 4504
+	Amount of material: 2252
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 152
+	Order size: 6230
+	Order came in: 7240.48
+	Order done in: 7503.47
+	Time in production: 262.993
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 153
+	Order size: 9904
+	Order came in: 7269.54
+	Order done in: 7574.83
+	Time in production: 305.285
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 154
+	Order size: 1040
+	Order came in: 7331.04
+	Order done in: 7582.65
+	Time in production: 251.604
+-----------------------------
+-----------------------------
+Order:
+	Order id: 160
+	Order came in: 7597.72
+	Order size: 2044
+	Amount of material: 1022
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 155
+	Order size: 2950
+	Order came in: 7334.92
+	Order done in: 7603.96
+	Time in production: 269.044
+-----------------------------
+-----------------------------
+Order:
+	Order id: 161
+	Order came in: 7616.95
+	Order size: 9975
+	Amount of material: 4987.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 156
+	Order size: 6845
+	Order came in: 7349.42
+	Order done in: 7652.35
+	Time in production: 302.928
+-----------------------------
+-----------------------------
+Order:
+	Order id: 162
+	Order came in: 7669.79
+	Order size: 6681
+	Amount of material: 3340.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 163
+	Order came in: 7675.8
+	Order size: 8780
+	Amount of material: 4390
+-----------------------------
+-----------------------------
+Order:
+	Order id: 164
+	Order came in: 7679.74
+	Order size: 4989
+	Amount of material: 2494.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 157
+	Order size: 6403
+	Order came in: 7425.62
+	Order done in: 7697.8
+	Time in production: 272.179
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 158
+	Order size: 4934
+	Order came in: 7468.75
+	Order done in: 7733.32
+	Time in production: 264.569
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 159
+	Order size: 4504
+	Order came in: 7477.68
+	Order done in: 7765.97
+	Time in production: 288.286
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 160
+	Order size: 2044
+	Order came in: 7597.72
+	Order done in: 7780.85
+	Time in production: 183.134
+-----------------------------
+-----------------------------
+Order:
+	Order id: 165
+	Order came in: 7781.28
+	Order size: 7863
+	Amount of material: 3931.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 166
+	Order came in: 7820.19
+	Order size: 6054
+	Amount of material: 3027
+-----------------------------
+-----------------------------
+Order:
+	Order id: 167
+	Order came in: 7831.08
+	Order size: 1720
+	Amount of material: 860
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 161
+	Order size: 9975
+	Order came in: 7616.95
+	Order done in: 7852.36
+	Time in production: 235.413
+-----------------------------
+-----------------------------
+Order:
+	Order id: 168
+	Order came in: 7864.23
+	Order size: 9213
+	Amount of material: 4606.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 169
+	Order came in: 7870.21
+	Order size: 5651
+	Amount of material: 2825.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 162
+	Order size: 6681
+	Order came in: 7669.79
+	Order done in: 7899.92
+	Time in production: 230.134
+-----------------------------
+-----------------------------
+Order:
+	Order id: 170
+	Order came in: 7912.03
+	Order size: 3961
+	Amount of material: 1980.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 171
+	Order came in: 7928.1
+	Order size: 9217
+	Amount of material: 4608.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 163
+	Order size: 8780
+	Order came in: 7675.8
+	Order done in: 7962.96
+	Time in production: 287.161
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 164
+	Order size: 4989
+	Order came in: 7679.74
+	Order done in: 7998.57
+	Time in production: 318.837
+-----------------------------
+-----------------------------
+Order:
+	Order id: 172
+	Order came in: 8003.95
+	Order size: 8296
+	Amount of material: 4148
+-----------------------------
+-----------------------------
+Order:
+	Order id: 173
+	Order came in: 8016.63
+	Order size: 2967
+	Amount of material: 1483.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 174
+	Order came in: 8024.93
+	Order size: 3372
+	Amount of material: 1686
+-----------------------------
+-----------------------------
+Order:
+	Order id: 175
+	Order came in: 8038.85
+	Order size: 2304
+	Amount of material: 1152
+-----------------------------
+-----------------------------
+Order:
+	Order id: 176
+	Order came in: 8043.74
+	Order size: 3947
+	Amount of material: 1973.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 177
+	Order came in: 8049.47
+	Order size: 2536
+	Amount of material: 1268
+-----------------------------
+-----------------------------
+Order:
+	Order id: 178
+	Order came in: 8049.93
+	Order size: 5934
+	Amount of material: 2967
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 165
+	Order size: 7863
+	Order came in: 7781.28
+	Order done in: 8054.83
+	Time in production: 273.55
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 166
+	Order size: 6054
+	Order came in: 7820.19
+	Order done in: 8098.86
+	Time in production: 278.664
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 167
+	Order size: 1720
+	Order came in: 7831.08
+	Order done in: 8111.67
+	Time in production: 280.586
+-----------------------------
+-----------------------------
+Order:
+	Order id: 179
+	Order came in: 8119.35
+	Order size: 5881
+	Amount of material: 2940.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 180
+	Order came in: 8158.09
+	Order size: 6104
+	Amount of material: 3052
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 168
+	Order size: 9213
+	Order came in: 7864.23
+	Order done in: 8176.58
+	Time in production: 312.349
+-----------------------------
+-----------------------------
+Order:
+	Order id: 181
+	Order came in: 8200.98
+	Order size: 2693
+	Amount of material: 1346.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 182
+	Order came in: 8207.44
+	Order size: 8327
+	Amount of material: 4163.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 169
+	Order size: 5651
+	Order came in: 7870.21
+	Order done in: 8217.72
+	Time in production: 347.511
+-----------------------------
+-----------------------------
+Order:
+	Order id: 183
+	Order came in: 8241.21
+	Order size: 6295
+	Amount of material: 3147.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 170
+	Order size: 3961
+	Order came in: 7912.03
+	Order done in: 8246.33
+	Time in production: 334.3
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 171
+	Order size: 9217
+	Order came in: 7928.1
+	Order done in: 8311.79
+	Time in production: 383.693
+-----------------------------
+-----------------------------
+Order:
+	Order id: 184
+	Order came in: 8318.13
+	Order size: 7832
+	Amount of material: 3916
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 172
+	Order size: 8296
+	Order came in: 8003.95
+	Order done in: 8372.35
+	Time in production: 368.402
+-----------------------------
+-----------------------------
+Order:
+	Order id: 185
+	Order came in: 8393.26
+	Order size: 7600
+	Amount of material: 3800
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 173
+	Order size: 2967
+	Order came in: 8016.63
+	Order done in: 8394.08
+	Time in production: 377.455
+-----------------------------
+-----------------------------
+Order:
+	Order id: 186
+	Order came in: 8408.16
+	Order size: 3288
+	Amount of material: 1644
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 174
+	Order size: 3372
+	Order came in: 8024.93
+	Order done in: 8417.58
+	Time in production: 392.65
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 175
+	Order size: 2304
+	Order came in: 8038.85
+	Order done in: 8433.91
+	Time in production: 395.07
+-----------------------------
+-----------------------------
+Order:
+	Order id: 187
+	Order came in: 8446.6
+	Order size: 8204
+	Amount of material: 4102
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 176
+	Order size: 3947
+	Order came in: 8043.74
+	Order done in: 8462.84
+	Time in production: 419.101
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 177
+	Order size: 2536
+	Order came in: 8049.47
+	Order done in: 8481.11
+	Time in production: 431.647
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 178
+	Order size: 5934
+	Order came in: 8049.93
+	Order done in: 8523.42
+	Time in production: 473.488
+-----------------------------
+-----------------------------
+Order:
+	Order id: 188
+	Order came in: 8547.81
+	Order size: 1216
+	Amount of material: 608
+-----------------------------
+-----------------------------
+Order:
+	Order id: 189
+	Order came in: 8557.95
+	Order size: 8030
+	Amount of material: 4015
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 179
+	Order size: 5881
+	Order came in: 8119.35
+	Order done in: 8565.4
+	Time in production: 446.049
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 180
+	Order size: 6104
+	Order came in: 8158.09
+	Order done in: 8609.66
+	Time in production: 451.575
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 181
+	Order size: 2693
+	Order came in: 8200.98
+	Order done in: 8628.34
+	Time in production: 427.356
+-----------------------------
+-----------------------------
+Order:
+	Order id: 190
+	Order came in: 8681.47
+	Order size: 7441
+	Amount of material: 3720.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 182
+	Order size: 8327
+	Order came in: 8207.44
+	Order done in: 8687.76
+	Time in production: 480.326
+-----------------------------
+-----------------------------
+Order:
+	Order id: 191
+	Order came in: 8710.31
+	Order size: 5865
+	Amount of material: 2932.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 192
+	Order came in: 8722.41
+	Order size: 2202
+	Amount of material: 1101
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 183
+	Order size: 6295
+	Order came in: 8241.21
+	Order done in: 8732.92
+	Time in production: 491.716
+-----------------------------
+-----------------------------
+Order:
+	Order id: 193
+	Order came in: 8741.47
+	Order size: 7907
+	Amount of material: 3953.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 194
+	Order came in: 8767.76
+	Order size: 4656
+	Amount of material: 2328
+-----------------------------
+-----------------------------
+Order:
+	Order id: 195
+	Order came in: 8777.28
+	Order size: 5287
+	Amount of material: 2643.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 196
+	Order came in: 8785.92
+	Order size: 3454
+	Amount of material: 1727
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 184
+	Order size: 7832
+	Order came in: 8318.13
+	Order done in: 8788.93
+	Time in production: 470.8
+-----------------------------
+-----------------------------
+Order:
+	Order id: 197
+	Order came in: 8806.67
+	Order size: 9014
+	Amount of material: 4507
+-----------------------------
+-----------------------------
+Order:
+	Order id: 198
+	Order came in: 8815.86
+	Order size: 8476
+	Amount of material: 4238
+-----------------------------
+-----------------------------
+Order:
+	Order id: 199
+	Order came in: 8827.15
+	Order size: 7077
+	Amount of material: 3538.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 200
+	Order came in: 8832.39
+	Order size: 4986
+	Amount of material: 2493
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 185
+	Order size: 7600
+	Order came in: 8393.26
+	Order done in: 8843.21
+	Time in production: 449.953
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 186
+	Order size: 3288
+	Order came in: 8408.16
+	Order done in: 8866.32
+	Time in production: 458.164
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 187
+	Order size: 8204
+	Order came in: 8446.6
+	Order done in: 8925.38
+	Time in production: 478.777
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 188
+	Order size: 1216
+	Order came in: 8547.81
+	Order done in: 8933.96
+	Time in production: 386.15
+-----------------------------
+-----------------------------
+Order:
+	Order id: 201
+	Order came in: 8971.93
+	Order size: 8512
+	Amount of material: 4256
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 189
+	Order size: 8030
+	Order came in: 8557.95
+	Order done in: 8992.35
+	Time in production: 434.401
+-----------------------------
+-----------------------------
+Order:
+	Order id: 202
+	Order came in: 9020.07
+	Order size: 6990
+	Amount of material: 3495
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 190
+	Order size: 7441
+	Order came in: 8681.47
+	Order done in: 9045.33
+	Time in production: 363.858
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 191
+	Order size: 5865
+	Order came in: 8710.31
+	Order done in: 9086.88
+	Time in production: 376.566
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 192
+	Order size: 2202
+	Order came in: 8722.41
+	Order done in: 9102.39
+	Time in production: 379.976
+-----------------------------
+-----------------------------
+Order:
+	Order id: 203
+	Order came in: 9139.36
+	Order size: 8950
+	Amount of material: 4475
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 193
+	Order size: 7907
+	Order came in: 8741.47
+	Order done in: 9160.35
+	Time in production: 418.878
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 194
+	Order size: 4656
+	Order came in: 8767.76
+	Order done in: 9193.15
+	Time in production: 425.39
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 195
+	Order size: 5287
+	Order came in: 8777.28
+	Order done in: 9230.64
+	Time in production: 453.356
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 196
+	Order size: 3454
+	Order came in: 8785.92
+	Order done in: 9255.85
+	Time in production: 469.924
+-----------------------------
+-----------------------------
+Order:
+	Order id: 204
+	Order came in: 9278.11
+	Order size: 1770
+	Amount of material: 885
+-----------------------------
+-----------------------------
+Order:
+	Order id: 205
+	Order came in: 9287.46
+	Order size: 4332
+	Amount of material: 2166
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 197
+	Order size: 9014
+	Order came in: 8806.67
+	Order done in: 9321.28
+	Time in production: 514.614
+-----------------------------
+-----------------------------
+Order:
+	Order id: 206
+	Order came in: 9355.64
+	Order size: 3654
+	Amount of material: 1827
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 198
+	Order size: 8476
+	Order came in: 8815.86
+	Order done in: 9381.37
+	Time in production: 565.51
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 199
+	Order size: 7077
+	Order came in: 8827.15
+	Order done in: 9432.82
+	Time in production: 605.673
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 200
+	Order size: 4986
+	Order came in: 8832.39
+	Order done in: 9468.51
+	Time in production: 636.121
+-----------------------------
+-----------------------------
+Order:
+	Order id: 207
+	Order came in: 9469.3
+	Order size: 6904
+	Amount of material: 3452
+-----------------------------
+-----------------------------
+Order:
+	Order id: 208
+	Order came in: 9507.01
+	Order size: 8324
+	Amount of material: 4162
+-----------------------------
+-----------------------------
+Order:
+	Order id: 209
+	Order came in: 9513.66
+	Order size: 4767
+	Amount of material: 2383.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 201
+	Order size: 8512
+	Order came in: 8971.93
+	Order done in: 9528.92
+	Time in production: 556.992
+-----------------------------
+-----------------------------
+Order:
+	Order id: 210
+	Order came in: 9535.43
+	Order size: 3093
+	Amount of material: 1546.5
+-----------------------------
+-----------------------------
+Order:
+	Order id: 211
+	Order came in: 9564.94
+	Order size: 7737
+	Amount of material: 3868.5
+-----------------------------
+-----------------------------
+Order done:
+	Order id: 202
+	Order size: 6990
+	Order came in: 9020.07
+	Order done in: 9579.27
+	Time in production: 559.2
+-----------------------------
+------------ STATISTICS ------------
+Number of orders: 201
+Average time in production (HOURS): 174.069 hours
