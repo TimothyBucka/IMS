@@ -141,21 +141,24 @@ public:
 //----------------------------------------------- PROCESSES -----------------------------------------------
 
 // ########## Simulation proccess for the production of the palettes of brake discs ##########
+class Order;
 class palette : public Process {
 private:
     unsigned palette_size; // number of brake discs in the palette
     unsigned palette_done; // brake discs done from the palette
     unsigned palette_id;   // id of the palette
     float startTime;       // time of the start of the palette
+    Order *order;          // which order is the palette from
 
 public:
     static unsigned palette_count; // id of the palette
     // constructor
-    palette(unsigned amount_of_brake_discs) : Process(),
+    palette(unsigned amount_of_brake_discs, Order *po) : Process(),
                                               palette_size(amount_of_brake_discs),
                                               palette_done(0),
                                               palette_id(palette::palette_count++),
-                                              startTime(Time) {}
+                                              startTime(Time),
+                                              order(po) {}
 
     unsigned get_palette_size() { return palette_size; }
 
@@ -205,16 +208,21 @@ public:
 // ########## Simulation proccess for the order ##########
 class Order : public Process {
 private:
-    unsigned order_size;      // number of brake discs in the order
+    unsigned order_size; // number of brake discs in the order
+    unsigned pieces_done = 0;
     float amount_of_material; // amount of material needed for the order
     unsigned order_id;        // id of the order
-    Queue *orders;
     float startTime;
 
 public:
     static unsigned order_count; // id of the order
     // constructor
     Order();
+
+    unsigned get_order_id() { return order_id; }
+    unsigned get_order_size() { return order_size; }
+    unsigned get_pieces_done() { return pieces_done; }
+    void add_pieces_done(unsigned i = 0) { pieces_done += i; }
     void Behavior();
 };
 unsigned Order::order_count = 0;

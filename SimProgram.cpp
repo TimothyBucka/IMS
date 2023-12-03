@@ -6,6 +6,10 @@ using namespace std;
 //----------------------------------------------- GLOBALS ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------ //
 
+// STATISTICS
+unsigned number_of_orders = 0;
+double time_in_production_sum = 0;
+
 // ########## GLOBAL WAREHOUSE FOR MATERIAL ##########
 material_warehouse warehouse("Material warehouse", (float)MATERIAL_WAREHOUSE_CAPACITY, (float)INITIAL_MATERIAL_WAREHOUSE_WEIGHT);
 
@@ -48,26 +52,26 @@ float material_warehouse::get_current() { return this->current; }
 
 bool material_warehouse::add_material(float amount) {
     if (this->current + amount > this->max) {
-        cout << "########################################### WAREHOUSE #############################################" << endl;
-        cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
-        cout << "###################################################################################################" << endl;
+        // cout << "########################################### WAREHOUSE #############################################" << endl;
+        // cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
+        // cout << "###################################################################################################" << endl;
         this->current = this->max;
         return false;
     }
 
-    cout << "########################################### WAREHOUSE #############################################" << endl;
+    // cout << "########################################### WAREHOUSE #############################################" << endl;
     this->current += amount; // increase the capacity of the warehouse by the amount of material
-    cout << "WAREHOUSE: current capacity after material added: " << this->current << endl;
-    cout << "###################################################################################################" << endl;
+    // cout << "WAREHOUSE: current capacity after material added: " << this->current << endl;
+    // cout << "###################################################################################################" << endl;
     return true;
 }
 
 bool material_warehouse::use_material(float amount) {
     if (amount > this->current) // chceck if the amount is not bigger than the capacity
     {
-        cout << "########################################### WAREHOUSE #############################################" << endl;
-        cout << "WAREHOUSE: amount of material needed for production is bigger than amount in warehouse" << endl;
-        cout << "###################################################################################################" << endl;
+        // cout << "########################################### WAREHOUSE #############################################" << endl;
+        // cout << "WAREHOUSE: amount of material needed for production is bigger than amount in warehouse" << endl;
+        // cout << "###################################################################################################" << endl;
 
         // TODO: the return might not be enough
         return false;
@@ -210,9 +214,11 @@ void palette::Behavior() {
 
     Passivate();
 
-    cout << "------------------------------------------------------------------- Back from packing" << endl;
-    cout << "\tPalette id: " << this->palette_id << endl;
-    cout << "\tPalette size: " << this->palette_done << endl;
+    this->order->add_pieces_done(this->palette_done);
+    if (this->order->get_pieces_done() == this->order->get_order_size()) {
+        this->order->Activate(); // activate the order process
+    }
+
 }
 
 // ########## Simulation proccess for the maintenance of the machine ##########
@@ -265,10 +271,15 @@ Order::Order() : Process() {
 }
 
 void Order::Behavior() {
-    cout << "Order:" << endl;
-    cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tOrder size: " << this->order_size << endl;
-    cout << "\tAmount of material: " << this->amount_of_material << endl;
+    // cout << "-----------------------------" << endl;
+    // cout << "Order:" << endl;
+    // cout << "\tOrder id: " << this->order_id << endl;
+    // cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tOrder size: " << this->order_size << endl;
+    // cout << "\tAmount of material: " << this->amount_of_material << endl;
+    // cout << "-----------------------------" << endl;
+
+    auto start_time = Time;
 
     Wait(SECONDS_IN_MINUTE);
 
@@ -276,13 +287,13 @@ void Order::Behavior() {
 
     if (warehouse.use_material(this->amount_of_material)) // chcek if there is enough material for the order
     {
+        auto order_size_tmp = this->order_size;
         for (;;) {
-            if (this->order_size > 1000) {
-                (new palette(1000))->Activate(); // create new palette
-                this->order_size -= 1000;
+            if (order_size_tmp > 1000) {
+                (new palette(1000, this))->Activate(); // create new palette
+                order_size_tmp -= 1000;
             } else {
-                (new palette(this->order_size))->Activate();
-                this->order_size = 0;
+                (new palette(order_size_tmp, this))->Activate();
                 break;
             }
         }
@@ -293,7 +304,18 @@ void Order::Behavior() {
         return;
     }
 
-    // create new batch
+    Passivate();
+
+    cout << "-----------------------------" << endl;
+    cout << "Order done:" << endl;
+    cout << "\tOrder id: " << this->order_id << endl;
+    cout << "\tOrder size: " << this->order_size << endl;
+    cout << "\tOrder came in: " << start_time / SECONDS_IN_HOUR << endl;
+    cout << "\tOrder done in: " << Time / SECONDS_IN_HOUR << endl;
+    cout << "\tTime in production: " << (Time - start_time) / SECONDS_IN_HOUR << endl;
+    cout << "-----------------------------" << endl;
+    number_of_orders++;
+    time_in_production_sum += (Time - start_time);
 }
 
 // ########## Process of supply of material ##########
@@ -368,26 +390,25 @@ void machine_work::Behavior() {
 
 // ########## Simulation proccess for packing ##########
 void package_for_worker::Behavior() {
-    cout << "===========================START===========================" << endl;
-    cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
-    cout << "\tPackage id: " << this->package_id << endl;
-    cout << "===========================================================" << endl;
+    // cout << "===========================START===========================" << endl;
+    // cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
+    // cout << "\tPackage id: " << this->package_id << endl;
+    // cout << "===========================================================" << endl;
 
     Enter(packing_workers, 1);
     Wait(3 * SECONDS_IN_MINUTE);
     Leave(packing_workers, 1);
 
-    cout << "=============================END=========================" << endl;
-    cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
-    cout << "\tPackage id: " << this->package_id << endl;
-    cout << "=========================================================" << endl;
+    // cout << "=============================END=========================" << endl;
+    // cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
+    // cout << "\tPackage id: " << this->package_id << endl;
+    // cout << "=========================================================" << endl;
 
     this->palette_to_pack->increment_palette_done(this->size);
 
     if (this->palette_to_pack->get_palette_done() == this->palette_to_pack->get_palette_size()) {
-        cout << "----------------------------------------Palette done" << endl;
         this->palette_to_pack->Activate(); // activate the palette process
     }
 }
@@ -473,16 +494,20 @@ int main(int argc, char *argv[]) {
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SECONDS_IN_DAY * 10); // time of simulation
+    Init(0, SECONDS_IN_DAY * 1000); // time of simulation
     (new order_event)->Activate();
     (new supply_event)->Activate();
-    (new maintenance_event)->Activate(SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation
-    (new break_event)->Activate(SECONDS_IN_HOUR * 2);       // first break after 2 hours not at the start of the simulation
+    (new maintenance_event)->Activate(Time + SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation
+    (new break_event)->Activate(Time + SECONDS_IN_HOUR * 2);       // first break after 2 hours not at the start of the simulation
     Run();
 
     // print out statistics TODO: ...
 
     // cout << "Warehouse cap: " << warehouse.get_current() << endl;
+
+    cout << "------------ STATISTICS ------------" << endl;
+    cout << "Number of orders: " << number_of_orders << endl;
+    cout << "Average time in production (HOURS): " << time_in_production_sum / number_of_orders / SECONDS_IN_HOUR << " hours" << endl;
 
     return ErrCode(SUCCESS);
 }
