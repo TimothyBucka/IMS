@@ -32,7 +32,7 @@ machine pressing_machine(maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pre
 machine one_sided_sander(maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker, ONE_SIDED_SANDER);
 machine aligner(maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker, ALIGNER);
 machine stretcher(maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker, STRETCHER);
-machine double_sided_sander(maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 20, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
+machine double_sided_sander(maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 10, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
 machine oiling_machine(maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker, OILING_MACHINE);
 machine *machines[6];
 
@@ -231,7 +231,7 @@ void palette::Behavior()
     Passivate();
 
     // transport
-    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
+    //Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
 
     this->palette_done = 0;
     int package_id = 0; // package id

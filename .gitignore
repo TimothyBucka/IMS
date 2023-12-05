@@ -9,6 +9,8 @@ SimProgram
 *.lo
 *.o
 *.obj
+*.bkp
+*.dtmp
 
 # Precompiled Headers
 *.gch
