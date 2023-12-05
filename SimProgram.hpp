@@ -14,7 +14,7 @@
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
 #define PIECE_MATERIAL_WEIGHT 0.5         // in kg
-#define PICE_AFTER_PRODUCTION_WEIGHT 0.25 // TODO in kg
+#define PIECE_AFTER_PRODUCTION_WEIGHT 0.25 // TODO in kg
 #define MATERIAL_SUPPLY_WEIGHT 20000      // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
 
 #define BAD_PIECE_PERCENT 16

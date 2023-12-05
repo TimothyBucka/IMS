@@ -285,12 +285,12 @@ void break_worker::Behavior()
 
     Seize(*(this->worker_to_break));
 
-    //cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
     Release(*(this->worker_to_break));
 
-    //cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     if (this->worker_to_break->get_name_of_worker() != "Oiling machine worker")
     {
@@ -406,20 +406,19 @@ void machine_work::Behavior()
     // cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
     // cout << "===========================================================" << endl;
 
-    //Wait((this->machine_to_work)->get_preparation_time());
+    // Wait((this->machine_to_work)->get_preparation_time());
     for (int i = this->machine_to_work->get_preparation_time(); i > 0; i--)
     {
         if (this->machine_to_work->get_worker()->is_break_time())
         {
-            //cout << "\tBREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
+            // cout << "\tBREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
             Release(*(this->machine_to_work->get_worker()));
             Passivate();
             Seize(*(this->machine_to_work->get_worker()));
-            //cout << "\tEND BREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
+            // cout << "\tEND BREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
         }
         Wait(1);
     }
-    
 
     switch (this->machine_to_work->get_machine_id())
     {
@@ -433,11 +432,11 @@ void machine_work::Behavior()
 
             if (this->machine_to_work->get_worker()->is_break_time() && this->machine_to_work->get_machine_id() != OILING_MACHINE)
             {
-                //cout << "\tBREAK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
+                // cout << "\tBREAK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
                 Release(*(this->machine_to_work->get_worker()));
                 Passivate();
                 Seize(*(this->machine_to_work->get_worker()));
-                //cout << "\tRESUMED TASK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
+                // cout << "\tRESUMED TASK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
             }
 
             Wait(this->machine_to_work->get_piece_production_time());
@@ -543,7 +542,7 @@ void break_event::Behavior()
 
     (new break_packaging_workers)->Activate();
 
-    //cout << "\tBreak event time: " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tBreak event time: " << Time / SECONDS_IN_HOUR << endl;
 }
 
 // ########################################### Generator for new orders ###########################################
@@ -608,7 +607,7 @@ int main(int argc, char *argv[])
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SECONDS_IN_DAY * 1000); // time of simulation
+    Init(0, SECONDS_IN_DAY * 30); // time of simulation
     (new order_event)->Activate();
     (new supply_event)->Activate();
     (new maintenance_event)->Activate(Time + SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation
@@ -624,5 +623,6 @@ int main(int argc, char *argv[])
     cout << "Average time in production (HOURS): " << time_in_production_sum / number_of_orders / SECONDS_IN_HOUR << " hours" << endl;
     cout << "Average amount of material of done orders: " << amount_of_material_done / number_of_orders << " kg" << endl;
     cout << "Amount of material sent back: " << amount_of_material_sent_back << " kg" << endl;
+    
     return ErrCode(SUCCESS);
 }
