@@ -17,23 +17,23 @@ unsigned amount_of_material_sent_back = 0;
 material_warehouse warehouse("Material warehouse", (float)MATERIAL_WAREHOUSE_CAPACITY, (float)INITIAL_MATERIAL_WAREHOUSE_WEIGHT);
 
 // ########################################### WORKERS ###########################################
-worker pressing_machine_worker(break_time[0][0], "Pressing machine worker");
-worker one_sided_sander_worker(break_time[1][0], "One sided sander worker");
-worker aligner_worker(break_time[2][0], "Aligner worker");
-worker stretcher_worker(break_time[3][0], "Stretcher worker");
-worker double_sided_sander_worker(break_time[4][0], "Double sided sander worker");
-worker oiling_machine_worker(break_time[5][0], "Oiling machine worker");
-worker *workers[6];
+worker pressing_machine_worker(N_PRESSING, WORKER_BREAK, "Pressing machine worker");
+worker one_sided_sander_worker(N_ONE_SIDED_SANDER, WORKER_BREAK, "One sided sander worker");
+worker aligner_worker(N_ALIGNER, WORKER_BREAK, "Aligner worker");
+worker stretcher_worker(N_STRETCHER, WORKER_BREAK, "Stretcher worker");
+worker double_sided_sander_worker(N_DOUBLE_SIDED_SANDER, WORKER_BREAK, "Double sided sander worker");
+worker oiling_machine_worker(N_OILING, WORKER_BREAK, "Oiling machine worker");
+worker packing_workers(N_PACKING_WORKERS, WORKER_BREAK, "Packing workers");
 
-Store packing_workers(N_PACKING_WORKERS);
+worker *workers[7];
 
 // ########################################### MACHINES ###########################################
-machine pressing_machine(maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
-machine one_sided_sander(maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker, ONE_SIDED_SANDER);
-machine aligner(maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker, ALIGNER);
-machine stretcher(maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker, STRETCHER);
-machine double_sided_sander(maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 20, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
-machine oiling_machine(maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker, OILING_MACHINE);
+machine pressing_machine(1, maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
+machine one_sided_sander(1, maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker, ONE_SIDED_SANDER);
+machine aligner(1, maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker, ALIGNER);
+machine stretcher(1, maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker, STRETCHER);
+machine double_sided_sander(1, maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 20, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
+machine oiling_machine(1, maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker, OILING_MACHINE);
 machine *machines[6];
 
 // ------------------------------------------------------------------------------------------------------- //
@@ -92,70 +92,6 @@ bool material_warehouse::use_material(float amount)
     // TODO: print out the utilization of the warehouse in stats
 
     return true;
-}
-
-// ########################################### Machines for producing brake discs ###########################################
-machine::machine(float time, float prep_time, float piece_time, string name, worker *machine_worker, enum machine_indetifier machine_id) : Facility(), input_queue()
-{
-    this->maintenance_time = time;
-    this->preparation_time = prep_time;
-    this->piece_production_time = piece_time;
-    this->machine_worker = machine_worker;
-    this->name = name;
-    this->machine_id = machine_id;
-}
-
-float machine::get_maintenance_time()
-{
-    return this->maintenance_time;
-}
-
-enum machine_indetifier machine::get_machine_id()
-{
-    return this->machine_id;
-}
-
-float machine::get_preparation_time()
-{
-    return this->preparation_time;
-}
-
-float machine::get_piece_production_time()
-{
-    return this->piece_production_time;
-}
-
-string machine::get_name()
-{
-    return this->name;
-}
-
-// ########################################### Workers ###########################################
-worker::worker(float break_time, string name) : Facility()
-{
-    this->break_time = break_time;
-    this->name_of_worker = name;
-    this->is_break = is_break;
-}
-
-float worker::get_break_time()
-{
-    return this->break_time;
-}
-
-void worker::start_break()
-{
-    this->is_break = true;
-}
-
-void worker::end_break()
-{
-    this->is_break = false;
-}
-
-string worker::get_name_of_worker()
-{
-    return this->name_of_worker;
 }
 
 // ------------------------------------------------------------------------------------------------------- //
@@ -261,12 +197,12 @@ maintenance::maintenance(machine *machine) : Process(1)
 
 void maintenance::Behavior()
 {
-    Seize(*(this->machine_to_maintain));
+    Enter(*(this->machine_to_maintain), this->machine_to_maintain->get_store_capacity());
     // if ((this->machine_to_maintain)->get_name() == "Pressing machine")
     //     cout << "START " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     Wait(Normal((this->machine_to_maintain)->get_maintenance_time(), (this->machine_to_maintain)->get_maintenance_time() * 0.1)); // 10% dispersion
-    Release(*(this->machine_to_maintain));
+    Leave(*(this->machine_to_maintain), this->machine_to_maintain->get_store_capacity());
 
     // if ((this->machine_to_maintain)->get_name() == "Pressing machine")
     //     cout << "END " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_HOUR << endl;
@@ -283,23 +219,24 @@ void break_worker::Behavior()
     if (this->worker_to_break->get_name_of_worker() != "Oiling machine worker")
         this->worker_to_break->start_break();
 
-    Seize(*(this->worker_to_break));
+    Enter(*(this->worker_to_break), this->worker_to_break->get_n_workers());
 
-    //cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
-    Release(*(this->worker_to_break));
+    Leave(*(this->worker_to_break), this->worker_to_break->get_n_workers());
 
-    //cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     if (this->worker_to_break->get_name_of_worker() != "Oiling machine worker")
     {
         this->worker_to_break->end_break();
-
-        machine_work *task_to_resume = this->worker_to_break->get_current_task();
-        if (task_to_resume != nullptr)
+        auto tasks = this->worker_to_break->get_current_tasks();
+        
+        for (auto task : tasks)
         {
-            task_to_resume->Activate();
+            if (task != nullptr)
+                task->Activate();
         }
     }
 }
@@ -322,13 +259,13 @@ Order::Order() : Process()
 
 void Order::Behavior()
 {
-    cout << "-----------------------------" << endl;
-    cout << "Order:" << endl;
-    cout << "\tOrder id: " << this->order_id << endl;
-    cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tOrder size: " << this->order_size << endl;
-    cout << "\tAmount of material: " << this->amount_of_material << endl;
-    cout << "-----------------------------" << endl;
+    // cout << "-----------------------------" << endl;
+    // cout << "Order:" << endl;
+    // cout << "\tOrder id: " << this->order_id << endl;
+    // cout << "\tOrder came in: " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tOrder size: " << this->order_size << endl;
+    // cout << "\tAmount of material: " << this->amount_of_material << endl;
+    // cout << "-----------------------------" << endl;
 
     auto start_time = Time;
 
@@ -363,14 +300,14 @@ void Order::Behavior()
 
     Passivate();
 
-    cout << "-----------------------------" << endl;
-    cout << "Order done:" << endl;
-    cout << "\tOrder id: " << this->order_id << endl;
-    cout << "\tOrder size: " << this->order_size << endl;
-    cout << "\tOrder came in: " << start_time / SECONDS_IN_HOUR << endl;
-    cout << "\tOrder done in: " << Time / SECONDS_IN_HOUR << endl;
-    cout << "\tTime in production: " << (Time - start_time) / SECONDS_IN_HOUR << endl;
-    cout << "-----------------------------" << endl;
+    // cout << "-----------------------------" << endl;
+    // cout << "Order done:" << endl;
+    // cout << "\tOrder id: " << this->order_id << endl;
+    // cout << "\tOrder size: " << this->order_size << endl;
+    // cout << "\tOrder came in: " << start_time / SECONDS_IN_HOUR << endl;
+    // cout << "\tOrder done in: " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tTime in production: " << (Time - start_time) / SECONDS_IN_HOUR << endl;
+    // cout << "-----------------------------" << endl;
     number_of_orders++;
     time_in_production_sum += (Time - start_time);
     amount_of_material_done += this->amount_of_material;
@@ -393,18 +330,12 @@ void Supply::Behavior()
 
 void machine_work::Behavior()
 {
-    Seize(*(this->machine_to_work));
+    Enter(*(this->machine_to_work), 1);
     if (this->machine_to_work->get_machine_id() != OILING_MACHINE) // oiling machine does not need worker
     {
-        Seize(*(this->machine_to_work->get_worker()));
+        Enter(*(this->machine_to_work->get_worker()), 1);
         this->machine_to_work->get_worker()->start_task(this);
     }
-
-    // cout << "===========================START===========================" << endl;
-    // cout << "Machine: " << this->machine_to_work->get_name() << endl;
-    // cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
-    // cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-    // cout << "===========================================================" << endl;
 
     //Wait((this->machine_to_work)->get_preparation_time());
     for (int i = this->machine_to_work->get_preparation_time(); i > 0; i--)
@@ -412,9 +343,9 @@ void machine_work::Behavior()
         if (this->machine_to_work->get_worker()->is_break_time())
         {
             //cout << "\tBREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
-            Release(*(this->machine_to_work->get_worker()));
+            Leave(*(this->machine_to_work->get_worker()), 1);
             Passivate();
-            Seize(*(this->machine_to_work->get_worker()));
+            Enter(*(this->machine_to_work->get_worker()), 1);
             //cout << "\tEND BREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
         }
         Wait(1);
@@ -434,9 +365,9 @@ void machine_work::Behavior()
             if (this->machine_to_work->get_worker()->is_break_time() && this->machine_to_work->get_machine_id() != OILING_MACHINE)
             {
                 //cout << "\tBREAK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
-                Release(*(this->machine_to_work->get_worker()));
+                Leave(*(this->machine_to_work->get_worker()), 1);
                 Passivate();
-                Seize(*(this->machine_to_work->get_worker()));
+                Enter(*(this->machine_to_work->get_worker()), 1);
                 //cout << "\tRESUMED TASK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
             }
 
@@ -457,9 +388,9 @@ void machine_work::Behavior()
 
             if (this->machine_to_work->get_worker()->is_break_time())
             {
-                Release(*(this->machine_to_work->get_worker()));
+                Leave(*(this->machine_to_work->get_worker()), 1);
                 Passivate();
-                Seize(*(this->machine_to_work->get_worker()));
+                Enter(*(this->machine_to_work->get_worker()), 1);
             }
 
             Wait(this->machine_to_work->get_piece_production_time());
@@ -470,22 +401,12 @@ void machine_work::Behavior()
 
     if (this->machine_to_work->get_machine_id() != OILING_MACHINE) // oiling machine does not need worker
     {
-        this->machine_to_work->get_worker()->start_task(nullptr);
+        this->machine_to_work->get_worker()->remove_task(this);
     }
-    Release(*(this->machine_to_work));
+    Leave(*(this->machine_to_work), 1);
 
     if (this->machine_to_work->get_machine_id() != OILING_MACHINE)
-        Release(*(this->machine_to_work->get_worker()));
-
-    // if (this->palette_in_machine->get_palette_id() == 0)
-    // {
-    // cout << "=============================END=========================" << endl;
-    // cout << "Machine: " << this->machine_to_work->get_name() << endl;
-    // cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
-    // cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-    // cout << "\tBrake discs done: " << this->palette_in_machine->get_palette_done() << endl;
-    // cout << "=========================================================" << endl;
-    // }
+        Leave(*(this->machine_to_work->get_worker()), 1);
 
     if (!this->machine_to_work->input_queue.Empty())
         this->machine_to_work->input_queue.GetFirst()->Activate();
@@ -536,12 +457,10 @@ void break_event::Behavior()
 {
     Activate(Time + Normal(SECONDS_IN_HOUR * 2, 0)); // schedule the next break event after 2 hours
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
     {
         (new break_worker(workers[i]))->Activate();
     }
-
-    (new break_packaging_workers)->Activate();
 
     //cout << "\tBreak event time: " << Time / SECONDS_IN_HOUR << endl;
 }
@@ -581,6 +500,7 @@ void fill_worker_array()
     workers[3] = &stretcher_worker;
     workers[4] = &double_sided_sander_worker;
     workers[5] = &oiling_machine_worker;
+    workers[6] = &packing_workers;
 }
 
 void help(const char *prog_name)

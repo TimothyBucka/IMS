@@ -9,29 +9,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
+// time conversion
 #define SECONDS_IN_DAY 86400
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
-#define PIECE_MATERIAL_WEIGHT 0.5         // in kg
-#define PICE_AFTER_PRODUCTION_WEIGHT 0.25 // TODO in kg
-#define MATERIAL_SUPPLY_WEIGHT 20000      // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
 
-#define BAD_PIECE_PERCENT 16
-
+// time constants
 #define PIECE_REWORK_TIME 18 // in seconds
+#define WORKER_BREAK 15 * SECONDS_IN_MINUTE
 
-#define N_PACKING_WORKERS 10
-
+// weight constants
+#define PIECE_MATERIAL_WEIGHT 0.5         // in kg
+#define PICE_AFTER_PRODUCTION_WEIGHT 0.25 // in kg
+#define MATERIAL_SUPPLY_WEIGHT 20000      // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
 #define MATERIAL_WAREHOUSE_CAPACITY 50000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
 
+// number/amount constants
 #define ORDER_SIZE_MIN 1000  // in pieces
 #define ORDER_SIZE_MAX 10000 // in pieces
+// number of machines and workers
+#define N_PRESSING 1
+#define N_ONE_SIDED_SANDER 1
+#define N_ALIGNER 1
+#define N_STRETCHER 1
+#define N_DOUBLE_SIDED_SANDER 1
+#define N_OILING 1
+#define N_PACKING_WORKERS 10
+
+// chances constants
+#define BAD_PIECE_PERCENT 16
 
 // error codes enum
-enum ErrCode
-{
+enum ErrCode {
     SUCCESS = 0,
     FAIL = 1
 };
@@ -50,18 +62,7 @@ float maintenance_time[][1] = {
     {20 * SECONDS_IN_MINUTE}  // oiling machine
 };
 
-float break_time[][1] = {
-    // first value is the time for the break
-    {15 * SECONDS_IN_MINUTE}, // pressing machine worker
-    {15 * SECONDS_IN_MINUTE}, // one sided sander worker
-    {15 * SECONDS_IN_MINUTE}, // aligner worker
-    {15 * SECONDS_IN_MINUTE}, // stretcher worker
-    {15 * SECONDS_IN_MINUTE}, // double sided sander worker
-    {15 * SECONDS_IN_MINUTE}  // oiling machine worker
-};
-
-enum machine_indetifier
-{
+enum machine_identifier {
     PRESSING_MACHINE = 0,
     ONE_SIDED_SANDER,
     ALIGNER,
@@ -79,66 +80,88 @@ enum machine_indetifier
 //----------------------------------------------- FACILITIES ----------------------------------------------- //
 class machine_work;
 // ########################################### Workers ###########################################
-class worker : public Facility
-{
+class worker : public Store {
 private:
+    unsigned n_workers;
     float break_time;
     std::string name_of_worker;
     bool is_break = false;
-    machine_work *current_task;
+    std::vector<machine_work *> tasks;
 
 public:
     // constructor
-    worker(float, std::string);
+    worker(unsigned n, float bt, std::string name) : Store(n),
+                                                     n_workers(n),
+                                                     break_time(bt),
+                                                     name_of_worker(name) {}
 
-    float get_break_time();
+    unsigned get_n_workers() { return n_workers; }
 
-    void start_break();
+    float get_break_time() { return break_time; }
 
-    void end_break();
+    void start_break() { is_break = true; };
+
+    void end_break() { is_break = false; };
 
     bool is_break_time() { return is_break; };
 
-    void start_task(machine_work *task) { current_task = task; };
+    void start_task(machine_work *task) { tasks.push_back(task); };
 
-    machine_work *get_current_task() { return current_task; };
+    std::vector<machine_work *> get_current_tasks() { return tasks; }
 
-    std::string get_name_of_worker();
+    void remove_task(machine_work *task) { 
+        for (size_t i = 0; i < tasks.size(); i++) {
+            if (tasks[i] == task) {
+                tasks.erase(tasks.begin() + i);
+                break;
+            }
+        }
+    };
+
+    std::string get_name_of_worker() { return name_of_worker; };
 };
 
 // ########################################### Machines for producing brake discs ###########################################
-class machine : public Facility
-{
+class machine : public Store {
 private:
+    unsigned store_capacity;
     float maintenance_time;
     float preparation_time;
     float piece_production_time;
     std::string name;
     worker *machine_worker;
-    enum machine_indetifier machine_id;
+    machine_identifier machine_id;
 
 public:
     Queue input_queue; // queue of palettes waiting to be processed
 
     // constructor
-    machine(float, float, float, std::string, worker *, enum machine_indetifier);
+    machine(unsigned sc, float mt, float pt, float ppt, std::string n, worker *w, machine_identifier mi) : Store(sc),
+                                                                                                               store_capacity(sc),
+                                                                                                               maintenance_time(mt),
+                                                                                                               preparation_time(pt),
+                                                                                                               piece_production_time(ppt),
+                                                                                                               name(n),
+                                                                                                               machine_worker(w),
+                                                                                                               machine_id(mi) {}
 
-    float get_maintenance_time();
+    unsigned get_store_capacity() { return store_capacity; }
 
-    float get_preparation_time();
+    float get_maintenance_time() { return maintenance_time; }
 
-    float get_piece_production_time();
+    float get_preparation_time() { return preparation_time; }
 
-    std::string get_name();
+    float get_piece_production_time() { return piece_production_time; }
 
-    enum machine_indetifier get_machine_id();
+    std::string get_name() { return name; }
+
+    machine_identifier get_machine_id() { return machine_id; }
 
     worker *get_worker() { return machine_worker; }
 };
 
 // ########################################### Material warehouse ###########################################
-class material_warehouse : public Facility
-{
+class material_warehouse : public Facility {
 private:
     float max;     // max capacity of the warehouse
     float current; // current capacity of the warehouse
@@ -159,8 +182,7 @@ public:
 // ########################################### Simulation proccess for the production of the palettes of brake discs ###########################################
 class Order;
 
-class palette : public Process
-{
+class palette : public Process {
 private:
     unsigned palette_size; // number of brake discs in the palette
     unsigned palette_done; // brake discs done from the palette
@@ -193,8 +215,7 @@ public:
 unsigned palette::palette_count = 0;
 
 // ########################################### Simulation proccess for the maintenance of the machine ###########################################
-class maintenance : public Process
-{
+class maintenance : public Process {
 private:
     machine *machine_to_maintain;
 
@@ -206,8 +227,7 @@ public:
 };
 
 // ########################################### Simulation proccess for the break of the worker ###########################################
-class break_worker : public Process
-{
+class break_worker : public Process {
 private:
     worker *worker_to_break;
 
@@ -219,16 +239,14 @@ public:
 };
 
 // ########################################### Process for triggering break for packaging workers  ###########################################
-class break_packaging_workers : public Process
-{
+class break_packaging_workers : public Process {
 public:
     break_packaging_workers() : Process(1){};
     void Behavior();
 };
 
 // ########################################### Simulation proccess for the order ###########################################
-class Order : public Process
-{
+class Order : public Process {
 private:
     unsigned order_size; // number of brake discs in the order
     unsigned pieces_done = 0;
@@ -250,8 +268,7 @@ public:
 unsigned Order::order_count = 0;
 
 // ########################################### Simulation proccess for the new batch of brake discs from the order ###########################################
-class batch : public Process
-{
+class batch : public Process {
 private:
     unsigned batch_size;           // number of brake discs in the batch to be made
     material_warehouse *warehouse; // pointer to the material warehouse
@@ -263,8 +280,7 @@ public:
 };
 
 // ########################################### Process of supply of material ###########################################
-class Supply : public Process
-{
+class Supply : public Process {
 public:
     Supply() : Process() {}
 
@@ -272,8 +288,7 @@ public:
 };
 
 // ########################################### Process of machine work ###########################################
-class machine_work : public Process
-{
+class machine_work : public Process {
 private:
     machine *machine_to_work;
     palette *palette_in_machine;
@@ -285,8 +300,7 @@ public:
 };
 
 // ########################################### Package ###########################################
-class package_for_worker : public Process
-{
+class package_for_worker : public Process {
 private:
     palette *palette_to_pack;
     int package_id;
@@ -302,26 +316,22 @@ public:
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########################################### Event for the maintenance ###########################################
-class maintenance_event : public Event
-{
+class maintenance_event : public Event {
     void Behavior();
 };
 
 // ########################################### Event for the break ###########################################
-class break_event : public Event
-{
+class break_event : public Event {
     void Behavior();
 };
 
 // ########################################### Event for new orders ###########################################
-class order_event : public Event
-{
+class order_event : public Event {
     void Behavior();
 };
 
 // ########################################### Event for supplies ###########################################
-class supply_event : public Event
-{
+class supply_event : public Event {
     void Behavior();
 };
 

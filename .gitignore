@@ -1,5 +1,9 @@
 simlib
 SimProgram
+out
+out.*
+output
+output.*
 
 # Prerequisites
 *.d
