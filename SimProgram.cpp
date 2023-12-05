@@ -337,6 +337,12 @@ void machine_work::Behavior()
         this->machine_to_work->get_worker()->start_task(this);
     }
 
+    // cout << "===========================START===========================" << endl;
+    // cout << "Machine: " << this->machine_to_work->get_name() << endl;
+    // cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
+    // cout << "===========================================================" << endl;
+
     //Wait((this->machine_to_work)->get_preparation_time());
     for (int i = this->machine_to_work->get_preparation_time(); i > 0; i--)
     {
@@ -350,7 +356,6 @@ void machine_work::Behavior()
         }
         Wait(1);
     }
-    
 
     switch (this->machine_to_work->get_machine_id())
     {
@@ -462,7 +467,7 @@ void break_event::Behavior()
         (new break_worker(workers[i]))->Activate();
     }
 
-    //cout << "\tBreak event time: " << Time / SECONDS_IN_HOUR << endl;
+    // cout << "\tBreak event time: " << Time / SECONDS_IN_HOUR << endl;
 }
 
 // ########################################### Generator for new orders ###########################################
@@ -528,7 +533,7 @@ int main(int argc, char *argv[])
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SECONDS_IN_DAY * 1000); // time of simulation
+    Init(0, SECONDS_IN_DAY * 30); // time of simulation
     (new order_event)->Activate();
     (new supply_event)->Activate();
     (new maintenance_event)->Activate(Time + SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation
@@ -544,5 +549,6 @@ int main(int argc, char *argv[])
     cout << "Average time in production (HOURS): " << time_in_production_sum / number_of_orders / SECONDS_IN_HOUR << " hours" << endl;
     cout << "Average amount of material of done orders: " << amount_of_material_done / number_of_orders << " kg" << endl;
     cout << "Amount of material sent back: " << amount_of_material_sent_back << " kg" << endl;
+    
     return ErrCode(SUCCESS);
 }
