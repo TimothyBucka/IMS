@@ -1,7 +1,7 @@
 #ifndef SimProgram_hpp
 #define SimProgram_hpp
 
-#define RUN 3
+#define RUN 1
 
 // include libraries
 #include <iostream>

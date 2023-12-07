@@ -63,37 +63,21 @@ float material_warehouse::get_current() { return this->current; }
 
 bool material_warehouse::add_material(float amount) {
     if (this->current + amount > this->max) {
-        // cout << "########################################### WAREHOUSE #############################################" << endl;
-        // cout << "WAREHOUSE: warehouse full - " << this->current + amount - this->max << " kg not added" << endl;
-        // cout << "###################################################################################################" << endl;
         amount_of_material_sent_back += this->current + amount - this->max;
         this->current = this->max;
         return false;
     }
 
-    // cout << "########################################### WAREHOUSE #############################################" << endl;
     this->current += amount; // increase the capacity of the warehouse by the amount of material
-    // cout << "WAREHOUSE: current capacity after material added: " << this->current << endl;
-    // cout << "###################################################################################################" << endl;
     return true;
 }
 
 bool material_warehouse::use_material(float amount) {
     if (amount > this->current) // chceck if the amount is not bigger than the capacity
     {
-        // cout << "########################################### WAREHOUSE #############################################" << endl;
-        // cout << "WAREHOUSE: amount of material needed for production is bigger than amount in warehouse" << endl;
-        // cout << "###################################################################################################" << endl;
-
-        // TODO: the return might not be enough
         return false;
     }
     this->current -= amount; // decrease the capacity of the warehouse by the amount of material needed for production
-
-    float utilization = static_cast<float>(this->current) / static_cast<float>(this->max) * 100;
-    (void)utilization;
-
-    // TODO: print out the utilization of the warehouse in stats
 
     return true;
 }
@@ -196,14 +180,9 @@ maintenance::maintenance(machine *machine) : Process(1) {
 
 void maintenance::Behavior() {
     Enter(*(this->machine_to_maintain), this->machine_to_maintain->get_store_capacity());
-    // if ((this->machine_to_maintain)->get_name() == "Pressing machine")
-    //     cout << "START " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     Wait(Normal((this->machine_to_maintain)->get_maintenance_time(), (this->machine_to_maintain)->get_maintenance_time() * 0.1)); // 10% dispersion
     Leave(*(this->machine_to_maintain), this->machine_to_maintain->get_store_capacity());
-
-    // if ((this->machine_to_maintain)->get_name() == "Pressing machine")
-    //     cout << "END " << (this->machine_to_maintain)->get_name() << " time " << Time / SECONDS_IN_HOUR << endl;
 }
 
 // ########################################### Simulation proccess for the break of the worker ###########################################
@@ -213,12 +192,8 @@ void break_worker::Behavior() {
 
     Enter(*(this->worker_to_break), this->worker_to_break->get_n_workers());
 
-    // cout << "START OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
-
     Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
     Leave(*(this->worker_to_break), this->worker_to_break->get_n_workers());
-
-    // cout << "END OF BREAK " << (this->worker_to_break)->get_name_of_worker() << " time " << Time / SECONDS_IN_HOUR << endl;
 
     if (this->worker_to_break->get_name_of_worker() != "Oiling machine worker") {
         this->worker_to_break->end_break();
@@ -245,7 +220,7 @@ void Order::Behavior() {
 
     this->startTime = Time; // save the time of order
 
-    if (warehouse.use_material(this->amount_of_material)) // chcek if there is enough material for the order
+    if (warehouse.use_material(this->amount_of_material)) // check if there is enough material for the order
     {
         auto order_size_tmp = this->order_size;
         for (;;) {
@@ -272,11 +247,7 @@ void Order::Behavior() {
 
 // ########################################### Process of supply of material ###########################################
 void Supply::Behavior() {
-    if (warehouse.add_material(MATERIAL_SUPPLY_WEIGHT)) {
-        // cout << "SUPPLY: added 5000 kg of material" << endl;
-    } else {
-        return;
-    }
+    warehouse.add_material(MATERIAL_SUPPLY_WEIGHT);
 }
 
 // ########################################### Simulation proccess for machine work ###########################################
@@ -295,20 +266,11 @@ void machine_work::Behavior() {
         this->machine_to_work->get_worker()->start_task(this);
     }
 
-    // cout << "===========================START===========================" << endl;
-    // cout << "Machine: " << this->machine_to_work->get_name() << endl;
-    // cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
-    // cout << "\tPalette id: " << this->palette_in_machine->get_palette_id() << endl;
-    // cout << "===========================================================" << endl;
-
-    // Wait((this->machine_to_work)->get_preparation_time());
     for (int i = this->machine_to_work->get_preparation_time(); i > 0; i--) {
         if (this->machine_to_work->get_worker()->is_break_time()) {
-            // cout << "\tBREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
             Leave(*(this->machine_to_work->get_worker()), 1);
             Passivate();
             Enter(*(this->machine_to_work->get_worker()), 1);
-            // cout << "\tEND BREAK PREPARATION WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
         }
         Wait(1);
     }
@@ -322,11 +284,9 @@ void machine_work::Behavior() {
         for (int i = this->palette_in_machine->get_palette_size(); i > 0; i--) {
 
             if (this->machine_to_work->get_worker()->is_break_time() && this->machine_to_work->get_machine_id() != OILING_MACHINE) {
-                // cout << "\tBREAK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
                 Leave(*(this->machine_to_work->get_worker()), 1);
                 Passivate();
                 Enter(*(this->machine_to_work->get_worker()), 1);
-                // cout << "\tRESUMED TASK IN MACHINE WORK:" << this->machine_to_work->get_worker()->get_name_of_worker() << endl;
             }
 
             Wait(this->machine_to_work->get_piece_production_time());
@@ -334,7 +294,7 @@ void machine_work::Behavior() {
         }
         break;
     case STRETCHER:
-        // redistribute paltte into packets by 15 pieces
+        // redistribute palette into packets by 15 pieces
         int PACKET_SIZE = 15;
 
         for (int i = this->palette_in_machine->get_palette_size(); i > 0; i -= PACKET_SIZE) {
@@ -370,21 +330,10 @@ void machine_work::Behavior() {
 
 // ########## Simulation proccess for packing ##########
 void package_for_worker::Behavior() {
-    // cout << "===========================START===========================" << endl;
-    // cout << "\tStart in time " << Time / SECONDS_IN_HOUR << endl;
-    // cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
-    // cout << "\tPackage id: " << this->package_id << endl;
-    // cout << "===========================================================" << endl;
 
     Enter(packing_workers, 1);
     Wait(3 * SECONDS_IN_MINUTE);
     Leave(packing_workers, 1);
-
-    // cout << "=============================END=========================" << endl;
-    // cout << "\tDone in time " << Time / SECONDS_IN_HOUR << endl;
-    // cout << "\tPalette id: " << this->palette_to_pack->get_palette_id() << endl;
-    // cout << "\tPackage id: " << this->package_id << endl;
-    // cout << "=========================================================" << endl;
 
     this->palette_to_pack->increment_palette_done(this->size);
 
@@ -429,20 +378,20 @@ void break_event::Behavior() {
     for (int i = 0; i < 7; i++) {
         (new break_worker(workers[i]))->Activate();
     }
-
-    // cout << "\tBreak event time: " << Time / SECONDS_IN_HOUR << endl;
 }
 
 // ########################################### Generator for new orders ###########################################
 void order_event::Behavior() {
+    Activate(Time + Exponential(SECONDS_IN_HOUR * 42)); // schedule the next order event every 42 hours (exponential)
+
     (new Order)->Activate();
-    Activate(Time + Exponential(SECONDS_IN_HOUR * 42)); // order every 8 hours (exponential)
 }
 
 // ########################################### Generator for supplies ###########################################
 void supply_event::Behavior() {
-    (new Supply)->Activate();
     Activate(Time + Normal(SECONDS_IN_DAY * 14, SECONDS_IN_HOUR * 2)); // supply every 24 hours (normal)
+
+    (new Supply)->Activate();
 }
 
 // --------------------------------------------------------------------------------------------------- //
@@ -512,7 +461,6 @@ void print_stats() {
     cout << "Number of quality controllers: " << quality_controllers.get_n_workers() << endl;
     cout << "Average number of bad pieces: " << (palettes_done ? (double)pieces_to_rework_all / palettes_done : 0) << endl;
     cout << "Average time spent in rework: " << (palettes_done ? spent_in_rework_all / palettes_done / SECONDS_IN_MINUTE : 0) << " minutes" << endl;
-    cout << "Quality control queue: " << endl;
     cout << "Average time spent in quality control: " << (palettes_done ? spent_in_quality_control / palettes_done / SECONDS_IN_MINUTE : 0) << " minutes" << endl;
 
     cout << endl << endl;
