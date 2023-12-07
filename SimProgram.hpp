@@ -1,6 +1,8 @@
 #ifndef SimProgram_hpp
 #define SimProgram_hpp
 
+#define RUN 3
+
 // include libraries
 #include <iostream>
 #include <random>
@@ -18,27 +20,54 @@
 
 // time constants
 #define PIECE_REWORK_TIME 18 // in seconds
+#define PIECE_CONTROL_TIME 10
 #define WORKER_BREAK 15 * SECONDS_IN_MINUTE
 
 // weight constants
-#define PIECE_MATERIAL_WEIGHT 0.5         // in kg
-#define PIECE_AFTER_PRODUCTION_WEIGHT 0.25 // in kg
-#define MATERIAL_SUPPLY_WEIGHT 20000      // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
+#define PIECE_MATERIAL_WEIGHT 0.5              // in kg
+#define PIECE_AFTER_PRODUCTION_WEIGHT 0.25     // in kg
+#define MATERIAL_SUPPLY_WEIGHT 20000           // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
 #define MATERIAL_WAREHOUSE_CAPACITY 50000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
 
 // number amount constants
 #define ORDER_SIZE_MIN 1000  // in pieces
 #define ORDER_SIZE_MAX 10000 // in pieces
+#define PALETTE_PIECES 2000
 
 // number of machines and workers
-#define N_PRESSING 1
-#define N_ONE_SIDED_SANDER 1
-#define N_ALIGNER 1
-#define N_STRETCHER 1
-#define N_DOUBLE_SIDED_SANDER 1
+#define N_PRESSING 2
+#define N_ONE_SIDED_SANDER 4
+#define N_ALIGNER 3
+#define N_STRETCHER 3
+#define N_DOUBLE_SIDED_SANDER 2
 #define N_OILING 1
+
+#if RUN == 3
+    #define N_PRESSING 2
+    #define N_ONE_SIDED_SANDER 4
+    #define N_ALIGNER 3
+    #define N_STRETCHER 3
+    #define N_DOUBLE_SIDED_SANDER 3
+    #define N_OILING 1
+#elif RUN == 2
+    #define N_PRESSING 2
+    #define N_ONE_SIDED_SANDER 3
+    #define N_ALIGNER 2
+    #define N_STRETCHER 3
+    #define N_DOUBLE_SIDED_SANDER 2
+    #define N_OILING 1
+#else
+    #define N_PRESSING 1
+    #define N_ONE_SIDED_SANDER 1
+    #define N_ALIGNER 1
+    #define N_STRETCHER 1
+    #define N_DOUBLE_SIDED_SANDER 1
+    #define N_OILING 1
+#endif
+
 #define N_PACKING_WORKERS 10
+#define N_QUALITY_CONTROLLERS 10
 
 // chances constants
 #define BAD_PIECE_PERCENT 16
@@ -52,6 +81,8 @@ enum ErrCode {
 // ------------------------------------------------------------------------------------------------------- //
 //----------------------------------------------- GLOBALS ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------ //
+
+double SIMULATION_TIME = SECONDS_IN_DAY * 365;
 
 float maintenance_time[][1] = {
     // first value is the time for
@@ -111,7 +142,7 @@ public:
 
     std::vector<machine_work *> get_current_tasks() { return tasks; }
 
-    void remove_task(machine_work *task) { 
+    void remove_task(machine_work *task) {
         for (size_t i = 0; i < tasks.size(); i++) {
             if (tasks[i] == task) {
                 tasks.erase(tasks.begin() + i);
@@ -135,17 +166,20 @@ private:
     machine_identifier machine_id;
 
 public:
-    Queue input_queue; // queue of palettes waiting to be processed
+    Queue pallets_waiting;
+    unsigned pallets_done = 0;
+    double pallets_time_all = 0;
 
     // constructor
     machine(unsigned sc, float mt, float pt, float ppt, std::string n, worker *w, machine_identifier mi) : Store(sc),
-                                                                                                               store_capacity(sc),
-                                                                                                               maintenance_time(mt),
-                                                                                                               preparation_time(pt),
-                                                                                                               piece_production_time(ppt),
-                                                                                                               name(n),
-                                                                                                               machine_worker(w),
-                                                                                                               machine_id(mi) {}
+                                                                                                           store_capacity(sc),
+                                                                                                           maintenance_time(mt),
+                                                                                                           preparation_time(pt),
+                                                                                                           piece_production_time(ppt),
+                                                                                                           name(n),
+                                                                                                           machine_worker(w),
+                                                                                                           machine_id(mi),
+                                                                                                           pallets_waiting() {}
 
     unsigned get_store_capacity() { return store_capacity; }
 
@@ -160,6 +194,8 @@ public:
     machine_identifier get_machine_id() { return machine_id; }
 
     worker *get_worker() { return machine_worker; }
+
+    double get_average_pallet_time() { return pallets_done ? pallets_time_all / pallets_done : 0; }
 };
 
 // ########################################### Material warehouse ###########################################
@@ -189,8 +225,9 @@ private:
     unsigned palette_size; // number of brake discs in the palette
     unsigned palette_done; // brake discs done from the palette
     unsigned palette_id;   // id of the palette
-    float startTime;       // time of the start of the palette
+    double startTime;      // time of the start of the palette
     Order *order;          // which order is the palette from
+    unsigned bad_pieces = 0;
 
 public:
     static unsigned palette_count; // id of the palette
@@ -209,6 +246,10 @@ public:
     unsigned get_palette_id() { return palette_id; }
 
     void increment_palette_done(unsigned i = 0) { palette_done = i ? palette_done + i : palette_done + 1; }
+
+    unsigned get_bad_pieces() { return bad_pieces; }
+
+    void increment_bad_pieces(unsigned i = 0) { bad_pieces = i ? bad_pieces + i : bad_pieces + 1; }
 
     void Behavior();
 };
@@ -235,15 +276,8 @@ private:
 
 public:
     // constructor
-    break_worker(worker *);
+    break_worker(worker *w) : Process(1), worker_to_break(w) {}
 
-    void Behavior();
-};
-
-// ########################################### Process for triggering break for packaging workers  ###########################################
-class break_packaging_workers : public Process {
-public:
-    break_packaging_workers() : Process(1){};
     void Behavior();
 };
 
@@ -254,7 +288,7 @@ private:
     unsigned pieces_done = 0;
     float amount_of_material; // amount of material needed for the order
     unsigned order_id;        // id of the order
-    float startTime;
+    double startTime;
 
 public:
     static unsigned order_count; // id of the order
@@ -268,18 +302,6 @@ public:
     void Behavior();
 };
 unsigned Order::order_count = 0;
-
-// ########################################### Simulation proccess for the new batch of brake discs from the order ###########################################
-class batch : public Process {
-private:
-    unsigned batch_size;           // number of brake discs in the batch to be made
-    material_warehouse *warehouse; // pointer to the material warehouse
-    Queue *orders;                 // pointer to the queue of orders waiting to be processed
-    float startTime;               // time of the start of the batch
-
-public:
-    void Behavior();
-};
 
 // ########################################### Process of supply of material ###########################################
 class Supply : public Process {
@@ -315,6 +337,16 @@ public:
     void Behavior();
 };
 
+// ########################################### Quality control ###########################################
+class quality_control : public Process {
+private:
+    palette *palette_to_check;
+
+public:
+    quality_control(palette *palette) : Process(), palette_to_check(palette) {}
+    void Behavior();
+};
+
 //----------------------------------------------- EVENTS -----------------------------------------------
 
 // ########################################### Event for the maintenance ###########################################
@@ -345,5 +377,7 @@ void fill_machine_array();
 void fill_worker_array();
 
 void help(const char *);
+
+void print_stats();
 
 #endif
