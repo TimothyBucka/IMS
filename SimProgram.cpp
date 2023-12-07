@@ -98,21 +98,27 @@ void palette::Behavior() {
     Passivate();
 
     // transport
-    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
+    double rnd_i = Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE);
+    if (rnd_i > 0)
+        Wait(rnd_i);
 
     this->palette_done = 0;
     (new machine_work(&one_sided_sander, this))->Activate(); // ONE SIDED SANDER
     Passivate();
 
     // transport
-    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
+    rnd_i = Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE);
+    if (rnd_i > 0)
+        Wait(rnd_i);
 
     this->palette_done = 0;
     (new machine_work(&aligner, this))->Activate(); // ALIGNER
     Passivate();
 
     // transport
-    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
+    rnd_i = Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE);
+    if (rnd_i > 0)
+        Wait(rnd_i);
 
     this->palette_done = 0;
     (new machine_work(&stretcher, this))->Activate(); // STRETCHER
@@ -124,7 +130,9 @@ void palette::Behavior() {
     }
 
     // transport
-    Wait(Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE));
+    rnd_i = Normal(15 * SECONDS_IN_MINUTE, 4 * SECONDS_IN_MINUTE);
+    if (rnd_i > 0)
+        Wait(rnd_i);
 
     this->palette_done = 0;
     (new machine_work(&double_sided_sander, this))->Activate(); // DOUBLE SIDED SANDER
@@ -138,7 +146,8 @@ void palette::Behavior() {
     }
     Passivate();
     double gc_end_time = Time;
-    Wait(PIECE_REWORK_TIME * this->bad_pieces);
+    if (this->bad_pieces > 0)
+        Wait(PIECE_REWORK_TIME * this->bad_pieces);
 
     this->palette_done = 0;
     (new machine_work(&oiling_machine, this))->Activate(); // OILING MACHINE
@@ -153,7 +162,11 @@ void palette::Behavior() {
         if (i < PACKAGE_SIZE) {
             PACKAGE_SIZE = i;
         }
-        (new package_for_worker(this, package_id++, PACKAGE_SIZE))->Activate(Time + Normal(15, 1));
+        rnd_i = Normal(15, 1);
+        if (rnd_i <= 0)
+            (new package_for_worker(this, package_id++, PACKAGE_SIZE))->Activate(Time + 15);
+        else
+            (new package_for_worker(this, package_id++, PACKAGE_SIZE))->Activate(Time + rnd_i);
     }
     Passivate();
     double packing_end_time = Time;
@@ -181,7 +194,9 @@ maintenance::maintenance(machine *machine) : Process(1) {
 void maintenance::Behavior() {
     Enter(*(this->machine_to_maintain), this->machine_to_maintain->get_store_capacity());
 
-    Wait(Normal((this->machine_to_maintain)->get_maintenance_time(), (this->machine_to_maintain)->get_maintenance_time() * 0.1)); // 10% dispersion
+    double wait_t = Normal((this->machine_to_maintain)->get_maintenance_time(), (this->machine_to_maintain)->get_maintenance_time() * 0.1); // 10% dispersion
+    if (wait_t > 0)
+        Wait(wait_t);
     Leave(*(this->machine_to_maintain), this->machine_to_maintain->get_store_capacity());
 }
 
@@ -192,7 +207,9 @@ void break_worker::Behavior() {
 
     Enter(*(this->worker_to_break), this->worker_to_break->get_n_workers());
 
-    Wait(Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1)); // 10% dispersion
+    double wait_t = Normal((this->worker_to_break)->get_break_time(), (this->worker_to_break)->get_break_time() * 0.1); // 10% dispersion
+    if (wait_t > 0)
+        Wait(wait_t);
     Leave(*(this->worker_to_break), this->worker_to_break->get_n_workers());
 
     if (this->worker_to_break->get_name_of_worker() != "Oiling machine worker") {
@@ -382,14 +399,23 @@ void break_event::Behavior() {
 
 // ########################################### Generator for new orders ###########################################
 void order_event::Behavior() {
-    Activate(Time + Exponential(SECONDS_IN_HOUR * 42)); // schedule the next order event every 42 hours (exponential)
+    double rnd_i = Exponential(SECONDS_IN_HOUR * 42); // order every 42 hours (exponential)
+
+    if (rnd_i > 0)
+        Activate(Time + rnd_i);
+    else
+        Activate(Time + SECONDS_IN_HOUR * 42);
 
     (new Order)->Activate();
 }
 
 // ########################################### Generator for supplies ###########################################
 void supply_event::Behavior() {
-    Activate(Time + Normal(SECONDS_IN_DAY * 14, SECONDS_IN_HOUR * 2)); // supply every 24 hours (normal)
+    double rnd_i = Normal(SECONDS_IN_DAY * 14, SECONDS_IN_HOUR * 2); // supply every 14 days (normal)
+    if (rnd_i > 0)
+        Activate(Time + rnd_i);
+    else
+        Activate(Time + SECONDS_IN_DAY * 14);
 
     (new Supply)->Activate();
 }
