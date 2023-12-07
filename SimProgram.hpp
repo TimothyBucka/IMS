@@ -30,7 +30,7 @@
 #define MATERIAL_WAREHOUSE_CAPACITY 50000      // in kg
 #define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
 
-// number/amount constants
+// number amount constants
 #define ORDER_SIZE_MIN 1000  // in pieces
 #define ORDER_SIZE_MAX 10000 // in pieces
 #define PALETTE_PIECES 2000
@@ -111,6 +111,7 @@ enum machine_identifier {
 
 //----------------------------------------------- FACILITIES ----------------------------------------------- //
 class machine_work;
+
 // ########################################### Workers ###########################################
 class worker : public Store {
 private:
