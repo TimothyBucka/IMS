@@ -1,8 +1,6 @@
 #ifndef SimProgram_hpp
 #define SimProgram_hpp
 
-#define RUN 3
-
 // include libraries
 #include <iostream>
 #include <random>
@@ -35,42 +33,12 @@
 #define ORDER_SIZE_MAX 10000 // in pieces
 #define PALETTE_PIECES 2000
 
-// number of machines and workers
-#define N_PRESSING 2
-#define N_ONE_SIDED_SANDER 4
-#define N_ALIGNER 3
-#define N_STRETCHER 3
-#define N_DOUBLE_SIDED_SANDER 2
-#define N_OILING 1
-
-#if RUN == 3
-    #define N_PRESSING 2
-    #define N_ONE_SIDED_SANDER 4
-    #define N_ALIGNER 3
-    #define N_STRETCHER 3
-    #define N_DOUBLE_SIDED_SANDER 3
-    #define N_OILING 1
-#elif RUN == 2
-    #define N_PRESSING 2
-    #define N_ONE_SIDED_SANDER 3
-    #define N_ALIGNER 2
-    #define N_STRETCHER 3
-    #define N_DOUBLE_SIDED_SANDER 2
-    #define N_OILING 1
-#else
-    #define N_PRESSING 1
-    #define N_ONE_SIDED_SANDER 1
-    #define N_ALIGNER 1
-    #define N_STRETCHER 1
-    #define N_DOUBLE_SIDED_SANDER 1
-    #define N_OILING 1
-#endif
-
-#define N_PACKING_WORKERS 10
-#define N_QUALITY_CONTROLLERS 10
-
 // chances constants
 #define BAD_PIECE_PERCENT 16
+
+// ------------------------------------------------------------------------------------------------------- //
+// ----------------------------------------------- ENUMS ------------------------------------------------- //
+// ------------------------------------------------------------------------------------------------------- //
 
 // error codes enum
 enum ErrCode {
@@ -78,11 +46,46 @@ enum ErrCode {
     FAIL = 1
 };
 
+enum machine_identifier {
+    PRESSING_MACHINE = 0,
+    ONE_SIDED_SANDER,
+    ALIGNER,
+    STRETCHER,
+    DOUBLE_SIDED_SANDER,
+    OILING_MACHINE,
+    PACKING,
+    QUALITY_CONTROL
+};
+
+// ------------------------------------------------------------------------------------------------------- //
+// ---------------------------------------------- STRUCTS ------------------------------------------------ //
+// ------------------------------------------------------------------------------------------------------- //
+
+struct ProgramOptions {
+    bool help = false;
+    double SIMULATION_DURATION = 365 * SECONDS_IN_DAY;
+    unsigned EXPERIMENT = 0;
+    unsigned N_PRESSING = 1;
+    bool press = false;
+    unsigned N_ONE_SIDED_SANDER = 1;
+    bool one_sided = false;
+    unsigned N_ALIGNER = 1;
+    bool align = false;
+    unsigned N_STRETCHER = 1;
+    bool stretch = false;
+    unsigned N_DOUBLE_SIDED_SANDER = 1;
+    bool double_sided = false;
+    unsigned N_OILING = 1;
+    bool oil = false;
+    unsigned N_PACKING_WORKERS = 10;
+    bool pack = false;
+    unsigned N_QUALITY_CONTROLLERS = 10;
+    bool quality = false;
+};
+
 // ------------------------------------------------------------------------------------------------------- //
 //----------------------------------------------- GLOBALS ----------------------------------------------- //
 // ------------------------------------------------------------------------------------------------------ //
-
-double SIMULATION_TIME = SECONDS_IN_DAY * 365;
 
 float maintenance_time[][1] = {
     // first value is the time for
@@ -92,15 +95,6 @@ float maintenance_time[][1] = {
     {45 * SECONDS_IN_MINUTE}, // stretcher
     {40 * SECONDS_IN_MINUTE}, // double sided sander
     {20 * SECONDS_IN_MINUTE}  // oiling machine
-};
-
-enum machine_identifier {
-    PRESSING_MACHINE = 0,
-    ONE_SIDED_SANDER,
-    ALIGNER,
-    STRETCHER,
-    DOUBLE_SIDED_SANDER,
-    OILING_MACHINE
 };
 
 // ------------------------------------------------------------------------------------------------------- //
@@ -372,12 +366,9 @@ class supply_event : public Event {
 // --------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- FUNCS --------------------------------------------- //
 // --------------------------------------------------------------------------------------------------- //
-void fill_machine_array();
-
-void fill_worker_array();
-
 void help(const char *);
 
-void print_stats();
+void print_stats(ProgramOptions &);
+bool parse_args(int, char **, ProgramOptions &);
 
 #endif

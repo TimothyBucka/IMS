@@ -6,7 +6,6 @@ SimProgram: $(NAME).cpp $(NAME).hpp
 	$(CC) $(NAME).cpp -o $(NAME) $(CFLAGS)
 
 run: $(NAME)
-	make
 	./$(NAME)
 
 clean:
