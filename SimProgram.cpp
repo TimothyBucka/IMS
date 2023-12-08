@@ -3,8 +3,8 @@
 using namespace std;
 
 // ------------------------------------------------------------------------------------------------------- //
-//----------------------------------------------- GLOBALS ----------------------------------------------- //
-// ------------------------------------------------------------------------------------------------------ //
+// ---------------------------------------------- GLOBALS ------------------------------------------------ //
+// ------------------------------------------------------------------------------------------------------- //
 
 // STATISTICS
 unsigned orders_done = 0;
@@ -25,23 +25,9 @@ Stat palette_time("Palette (2000 pcs) time in production (HOURS)");
 material_warehouse warehouse("Material warehouse", (float)MATERIAL_WAREHOUSE_CAPACITY, (float)INITIAL_MATERIAL_WAREHOUSE_WEIGHT);
 
 // ########################################### WORKERS ###########################################
-worker pressing_machine_worker(N_PRESSING, WORKER_BREAK, "Pressing machine worker");
-worker one_sided_sander_worker(N_ONE_SIDED_SANDER, WORKER_BREAK, "One sided sander worker");
-worker aligner_worker(N_ALIGNER, WORKER_BREAK, "Aligner worker");
-worker stretcher_worker(N_STRETCHER, WORKER_BREAK, "Stretcher worker");
-worker double_sided_sander_worker(N_DOUBLE_SIDED_SANDER, WORKER_BREAK, "Double sided sander worker");
-worker oiling_machine_worker(N_OILING, WORKER_BREAK, "Oiling machine worker");
-worker packing_workers(N_PACKING_WORKERS, WORKER_BREAK, "Packing workers");
-worker quality_controllers(N_QUALITY_CONTROLLERS, WORKER_BREAK, "Quality controllers");
-worker *workers[7];
+worker *workers[8];
 
 // ########################################### MACHINES ###########################################
-machine pressing_machine(N_PRESSING, maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
-machine one_sided_sander(N_ONE_SIDED_SANDER, maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker, ONE_SIDED_SANDER);
-machine aligner(N_ALIGNER, maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker, ALIGNER);
-machine stretcher(N_STRETCHER, maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker, STRETCHER);
-machine double_sided_sander(N_DOUBLE_SIDED_SANDER, maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 10, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
-machine oiling_machine(N_OILING, maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker, OILING_MACHINE);
 machine *machines[6];
 
 // ------------------------------------------------------------------------------------------------------- //
@@ -94,7 +80,7 @@ void palette::Behavior() {
     // cout << "\tStart time: " << this->startTime / SECONDS_IN_MINUTE << endl;
 
     this->startTime = Time;
-    (new machine_work(&pressing_machine, this))->Activate(); // PRESSING MACHINE
+    (new machine_work(machines[PRESSING_MACHINE], this))->Activate(); // PRESSING MACHINE
     Passivate();
 
     // transport
@@ -103,7 +89,7 @@ void palette::Behavior() {
         Wait(rnd_i);
 
     this->palette_done = 0;
-    (new machine_work(&one_sided_sander, this))->Activate(); // ONE SIDED SANDER
+    (new machine_work(machines[ONE_SIDED_SANDER], this))->Activate(); // ONE SIDED SANDER
     Passivate();
 
     // transport
@@ -112,7 +98,7 @@ void palette::Behavior() {
         Wait(rnd_i);
 
     this->palette_done = 0;
-    (new machine_work(&aligner, this))->Activate(); // ALIGNER
+    (new machine_work(machines[ALIGNER], this))->Activate(); // ALIGNER
     Passivate();
 
     // transport
@@ -121,7 +107,7 @@ void palette::Behavior() {
         Wait(rnd_i);
 
     this->palette_done = 0;
-    (new machine_work(&stretcher, this))->Activate(); // STRETCHER
+    (new machine_work(machines[STRETCHER], this))->Activate(); // STRETCHER
     Passivate();
 
     // cleaning
@@ -135,7 +121,7 @@ void palette::Behavior() {
         Wait(rnd_i);
 
     this->palette_done = 0;
-    (new machine_work(&double_sided_sander, this))->Activate(); // DOUBLE SIDED SANDER
+    (new machine_work(machines[DOUBLE_SIDED_SANDER], this))->Activate(); // DOUBLE SIDED SANDER
     Passivate();
 
     // quality control
@@ -150,7 +136,7 @@ void palette::Behavior() {
         Wait(PIECE_REWORK_TIME * this->bad_pieces);
 
     this->palette_done = 0;
-    (new machine_work(&oiling_machine, this))->Activate(); // OILING MACHINE
+    (new machine_work(machines[OILING_MACHINE], this))->Activate(); // OILING MACHINE
     Passivate();
 
     // packing
@@ -293,6 +279,8 @@ void machine_work::Behavior() {
     }
 
     switch (this->machine_to_work->get_machine_id()) {
+    default:
+        break;
     case PRESSING_MACHINE:
     case ONE_SIDED_SANDER:
     case ALIGNER:
@@ -348,9 +336,9 @@ void machine_work::Behavior() {
 // ########## Simulation proccess for packing ##########
 void package_for_worker::Behavior() {
 
-    Enter(packing_workers, 1);
+    Enter(*workers[PACKING], 1);
     Wait(3 * SECONDS_IN_MINUTE);
-    Leave(packing_workers, 1);
+    Leave(*workers[PACKING], 1);
 
     this->palette_to_pack->increment_palette_done(this->size);
 
@@ -361,14 +349,14 @@ void package_for_worker::Behavior() {
 
 // ########### Quality control ###########
 void quality_control::Behavior() {
-    Enter(quality_controllers, 1);
+    Enter(*workers[QUALITY_CONTROL], 1);
     double rand_n = Uniform(0, 100);
 
     if (rand_n <= BAD_PIECE_PERCENT) {
         this->palette_to_check->increment_bad_pieces();
     }
     Wait(PIECE_CONTROL_TIME);
-    Leave(quality_controllers, 1);
+    Leave(*workers[QUALITY_CONTROL], 1);
 
     this->palette_to_check->increment_palette_done();
 
@@ -392,7 +380,7 @@ void maintenance_event::Behavior() {
 void break_event::Behavior() {
     Activate(Time + Normal(SECONDS_IN_HOUR * 2, 0)); // schedule the next break event after 2 hours
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 8; i++) {
         (new break_worker(workers[i]))->Activate();
     }
 }
@@ -423,29 +411,50 @@ void supply_event::Behavior() {
 // --------------------------------------------------------------------------------------------------- //
 // ----------------------------------------------- FUNCS --------------------------------------------- //
 // --------------------------------------------------------------------------------------------------- //
-void fill_machine_array() {
-    machines[0] = &pressing_machine;
-    machines[1] = &one_sided_sander;
-    machines[2] = &aligner;
-    machines[3] = &stretcher;
-    machines[4] = &double_sided_sander;
-    machines[5] = &oiling_machine;
-}
-
-void fill_worker_array() {
-    workers[0] = &pressing_machine_worker;
-    workers[1] = &one_sided_sander_worker;
-    workers[2] = &aligner_worker;
-    workers[3] = &stretcher_worker;
-    workers[4] = &double_sided_sander_worker;
-    workers[5] = &oiling_machine_worker;
-    workers[6] = &packing_workers;
-}
 
 void help(const char *prog_name) {
     cout << prog_name << " program implements the SHO of the engineering company. Default simulation run is 365 days." << endl;
-    cout << "Usage: " << prog_name << " [--help] [simulation_duration]" << endl;
-    cout << "\tsimulation_duration - duration of the simulation in days" << endl << endl;
+    cout << "Usage: " << prog_name << " [options]" << endl;
+    cout << "\t--help, -h              : prints help" <<endl;
+    cout << "\t<simulation_duration>   : simulation duration in days" << endl;
+    cout << "\t--duration, -d <days>   : simulation duration in days" << endl;
+    cout << "\t--experiment, -e <number 0-2> : run given experiment (with machine configuration)" << endl;
+    cout << "\t\t0:" << endl;
+    cout << "\t\t\tPressing machine machines: 1" << endl;
+    cout << "\t\t\tOne sided sander machines: 1" << endl;
+    cout << "\t\t\tAligner machines: 1" << endl;
+    cout << "\t\t\tStretcher machines: 1" << endl;
+    cout << "\t\t\tDouble sided sander machines: 1" << endl;
+    cout << "\t\t\tOiling machines: 1" << endl;
+    cout << "\t\t\tPacking workers: 10" << endl;
+    cout << "\t\t\tQuality controllers: 10" << endl;
+    cout<< "\t\t1:" << endl;
+    cout << "\t\t\tPressing machine machines: 2" << endl;
+    cout << "\t\t\tOne sided sander machines: 3" << endl;
+    cout << "\t\t\tAligner machines: 2" << endl;
+    cout << "\t\t\tStretcher machines: 3" << endl;
+    cout << "\t\t\tDouble sided sander machines: 2" << endl;
+    cout << "\t\t\tOiling machines: 1" << endl;
+    cout << "\t\t\tPacking workers: 10" << endl;
+    cout << "\t\t\tQuality controllers: 10" << endl;
+    cout<< "\t\t2:" << endl;
+    cout << "\t\t\tPressing machine machines: 2" << endl;
+    cout << "\t\t\tOne sided sander machines: 4" << endl;
+    cout << "\t\t\tAligner machines: 3" << endl;
+    cout << "\t\t\tStretcher machines: 3" << endl;
+    cout << "\t\t\tDouble sided sander machines: 3" << endl;
+    cout << "\t\t\tOiling machines: 1" << endl;
+    cout << "\t\t\tPacking workers: 10" << endl;
+    cout << "\t\t\tQuality controllers: 10" << endl;
+    cout << "\t--press <number>        : number of pressing machines" << endl;
+    cout << "\t--1_sided <number>    : number of one sided sander machines" << endl;
+    cout << "\t--align <number>      : number of aligner machines" << endl;
+    cout << "\t--stretch <number>    : number of stretcher machines" << endl;
+    cout << "\t--2_sided <number> : number of double sided sander machines" << endl;
+    cout << "\t--oil <number>       : number of oiling machines" << endl;
+    cout << "\t--pack <number>      : number of packing workers" << endl;
+    cout << "\t--quality <number>   : number of quality controllers" << endl;
+    cout << endl;
     cout << "Subject: IMS" << endl;
     cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
     cout << "          Adam Pap (xpapad11) " << endl;
@@ -453,11 +462,11 @@ void help(const char *prog_name) {
     cout << "          xpapad11@stud.fit.vutbr.cz " << endl;
 }
 
-void print_stats() {
+void print_stats(ProgramOptions &options) {
     cout << "------------------------------------------------------------" << endl;
     cout << "|                    FACTORY SIMULATION                    |" << endl;
     cout << "------------------------------------------------------------" << endl;
-    cout << "Simulation time: " << SIMULATION_TIME / SECONDS_IN_DAY << " days" << endl;
+    cout << "Simulation time: " << options.SIMULATION_DURATION / SECONDS_IN_DAY << " days" << endl;
     cout << "Number of orders done: " << orders_done << endl;
     cout << "Orders refused (not enough material): " << not_enough_material << endl;
     cout << "Average order time in production (HOURS): " << (orders_done ? time_in_production_sum / orders_done / SECONDS_IN_HOUR : 0) << " hours" << endl;
@@ -484,7 +493,7 @@ void print_stats() {
 
     cout << "Quality control: " << endl;
     cout << "------------------------------------------------------------"<<endl;
-    cout << "Number of quality controllers: " << quality_controllers.get_n_workers() << endl;
+    cout << "Number of quality controllers: " << workers[QUALITY_CONTROL]->get_n_workers() << endl;
     cout << "Average number of bad pieces: " << (palettes_done ? (double)pieces_to_rework_all / palettes_done : 0) << endl;
     cout << "Average time spent in rework: " << (palettes_done ? spent_in_rework_all / palettes_done / SECONDS_IN_MINUTE : 0) << " minutes" << endl;
     cout << "Average time spent in quality control: " << (palettes_done ? spent_in_quality_control / palettes_done / SECONDS_IN_MINUTE : 0) << " minutes" << endl;
@@ -493,43 +502,260 @@ void print_stats() {
 
     cout << "Packing: " << endl;
     cout << "------------------------------------------------------------"<<endl;
-    cout << "Number of packing workers: " << packing_workers.get_n_workers() << endl;
+    cout << "Number of packing workers: " << workers[PACKING]->get_n_workers() << endl;
     cout << "Packing queue: " << endl;
     cout << "Average time spent in packing: " << (palettes_done ? spent_in_packing / palettes_done / SECONDS_IN_MINUTE : 0) << " minutes" << endl;
 
     cout << endl;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc == 2) {
-        if (strcmp(argv[1], "--help") == 0) {
-            help(argv[0]);
-            return 0;
+bool parse_args(int argc, char *argv[], ProgramOptions &options) {
+    for (int i = 1; i < argc; ++i) {
+        string arg = argv[i];
+
+        if (arg == "--help" || arg == "-h") {
+            options.help = true;
+            return true;
+
+        } else if (arg == "--duration" || arg == "-d") {
+            if (i + 1 < argc) {
+                try {
+                    options.SIMULATION_DURATION = stod(argv[++i]) * SECONDS_IN_DAY;
+                } catch (exception &e) {
+                    cerr << "Error: --duration option requires a numeric argument.\n";
+                    return false;
+                }
+            } else {
+                cerr << "Error: --duration option requires a numeric argument.\n";
+                return false;
+            }
+
+        } else if (arg == "--experiment" || arg == "-e") {
+            if (i + 1 < argc) {
+                try {
+                    options.EXPERIMENT = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --experiment option requires a numeric argument in range 0-2.\n";
+                    return false;
+                }
+
+                if (options.EXPERIMENT > 2) {
+                    cerr << "Error: --experiment option requires a numeric argument in range 0-2.\n";
+                    return false;
+                }
+            } else {
+                cerr << "Error: --run option requires a numeric argument in range 0-2.\n";
+                return false;
+            }
+
+        } else if (arg == "--press") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_PRESSING = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --press option requires a numeric argument.\n";
+                    return false;
+                }
+                options.press = true;
+            } else {
+                cerr << "Error: --press option requires a numeric argument.\n";
+                return false;
+            }
+
+        } else if (arg == "--1_sided") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_ONE_SIDED_SANDER = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --1_sided option requires a numeric argument.\n";
+                    return false;
+                }
+                options.one_sided = true;
+            } else {
+                cerr << "Error: --1_sided option requires a numeric argument.\n";
+                return false;
+            }
+
+        } else if (arg == "--align") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_ALIGNER = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --align option requires a numeric argument.\n";
+                    return false;
+                }
+                options.align = true;
+            } else {
+                cerr << "Error: --align option requires a numeric argument.\n";
+                return false;
+            }
+        
+        } else if (arg == "--stretch") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_STRETCHER = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --stretch option requires a numeric argument.\n";
+                    return false;
+                }
+                options.stretch = true;
+            } else {
+                cerr << "Error: --stretch option requires a numeric argument.\n";
+                return false;
+            }
+    
+        } else if (arg == "--2_sided") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_DOUBLE_SIDED_SANDER = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --2_sided option requires a numeric argument.\n";
+                    return false;
+                }
+                options.double_sided = true;
+            } else {
+                cerr << "Error: --2_sided option requires a numeric argument.\n";
+                return false;
+            }
+        
+        } else if (arg == "--oil") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_OILING = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --oil option requires a numeric argument.\n";
+                    return false;
+                }
+                options.oil = true;
+            } else {
+                cerr << "Error: --oil option requires a numeric argument.\n";
+                return false;
+            }
+        
+        } else if (arg == "--pack") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_PACKING_WORKERS = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --pack option requires a numeric argument.\n";
+                    return false;
+                }
+                options.pack = true;
+            } else {
+                cerr << "Error: --pack option requires a numeric argument.\n";
+                return false;
+            }
+        
+        } else if (arg == "--quality") {
+            if (i + 1 < argc) {
+                try {
+                    options.N_QUALITY_CONTROLLERS = stoul(argv[++i]);
+                } catch (exception &e) {
+                    cerr << "Error: --quality option requires a numeric argument.\n";
+                    return false;
+                }
+                options.quality = true;
+            } else {
+                cerr << "Error: --quality option requires a numeric argument.\n";
+                return false;
+            }
+        
         } else {
-            double tmp = SIMULATION_TIME;
             try {
-                SIMULATION_TIME = stod(argv[1]) * SECONDS_IN_DAY;
-            } catch (const std::exception &e) {
-                SIMULATION_TIME = tmp;
+                options.SIMULATION_DURATION = stod(arg) * SECONDS_IN_DAY;
+            } catch (exception &e) {
+                cerr << "Error: unknown option " << arg << endl;
+                return false;
             }
         }
     }
 
-    fill_machine_array();
-    fill_worker_array();
+    switch (options.EXPERIMENT)
+    {
+    case 1:
+        options.N_PRESSING = options.press ? options.N_PRESSING : 2;
+        options.N_ONE_SIDED_SANDER = options.one_sided ? options.N_ONE_SIDED_SANDER : 3;
+        options.N_ALIGNER = options.align ? options.N_ALIGNER : 2;
+        options.N_STRETCHER = options.stretch ? options.N_STRETCHER : 3;
+        options.N_DOUBLE_SIDED_SANDER = options.double_sided ? options.N_DOUBLE_SIDED_SANDER : 2;
+        options.N_OILING = options.oil ? options.N_OILING : 1;
+        options.N_PACKING_WORKERS = options.pack ? options.N_PACKING_WORKERS : 10;
+        options.N_QUALITY_CONTROLLERS = options.quality ? options.N_QUALITY_CONTROLLERS : 10;
+        break;
+    
+    case 2:
+        options.N_PRESSING = options.press ? options.N_PRESSING : 2;
+        options.N_ONE_SIDED_SANDER = options.one_sided ? options.N_ONE_SIDED_SANDER : 4;
+        options.N_ALIGNER = options.align ? options.N_ALIGNER : 3;
+        options.N_STRETCHER = options.stretch ? options.N_STRETCHER : 3;
+        options.N_DOUBLE_SIDED_SANDER = options.double_sided ? options.N_DOUBLE_SIDED_SANDER : 3;
+        options.N_OILING = options.oil ? options.N_OILING : 1;
+        options.N_PACKING_WORKERS = options.pack ? options.N_PACKING_WORKERS : 10;
+        options.N_QUALITY_CONTROLLERS = options.quality ? options.N_QUALITY_CONTROLLERS : 10;
+        break;
+
+    default:
+        break;
+    }
+
+    return true;
+}
+
+int main(int argc, char *argv[]) {
+    ProgramOptions options;
+
+    if (!parse_args(argc, argv, options)) {
+        return ErrCode(FAIL);
+    }
+    if (options.help) {
+        help(argv[0]);
+        return ErrCode(SUCCESS);
+    }
+
+    // fill worker array
+    worker pressing_machine_worker(options.N_PRESSING, WORKER_BREAK, "Pressing machine worker");
+    workers[PRESSING_MACHINE] = &pressing_machine_worker;
+    worker one_sided_sander_worker(options.N_ONE_SIDED_SANDER, WORKER_BREAK, "One sided sander worker");
+    workers[ONE_SIDED_SANDER] = &one_sided_sander_worker;
+    worker aligner_worker(options.N_ALIGNER, WORKER_BREAK, "Aligner worker");
+    workers[ALIGNER] = &aligner_worker;
+    worker stretcher_worker(options.N_STRETCHER, WORKER_BREAK, "Stretcher worker");
+    workers[STRETCHER] = &stretcher_worker;
+    worker double_sided_sander_worker(options.N_DOUBLE_SIDED_SANDER, WORKER_BREAK, "Double sided sander worker");
+    workers[DOUBLE_SIDED_SANDER] = &double_sided_sander_worker;
+    worker oiling_machine_worker(options.N_OILING, WORKER_BREAK, "Oiling machine worker");
+    workers[OILING_MACHINE] = &oiling_machine_worker;
+    worker packing_workers(options.N_PACKING_WORKERS, WORKER_BREAK, "Packing workers");
+    workers[PACKING] = &packing_workers;
+    worker quality_controllers(options.N_QUALITY_CONTROLLERS, WORKER_BREAK, "Quality controllers");
+    workers[QUALITY_CONTROL] = &quality_controllers;
+
+    // fill machine array
+    machine pressing_machine(options.N_PRESSING, maintenance_time[0][0], 60 * SECONDS_IN_MINUTE, 1, "Pressing machine", &pressing_machine_worker, PRESSING_MACHINE);
+    machines[PRESSING_MACHINE] = &pressing_machine;
+    machine one_sided_sander(options.N_ONE_SIDED_SANDER, maintenance_time[1][0], 10 * SECONDS_IN_MINUTE, 10, "One sided sander", &one_sided_sander_worker, ONE_SIDED_SANDER);
+    machines[ONE_SIDED_SANDER] = &one_sided_sander;
+    machine aligner(options.N_ALIGNER, maintenance_time[2][0], 10 * SECONDS_IN_MINUTE, 10, "Aligner", &aligner_worker, ALIGNER);
+    machines[ALIGNER] = &aligner;
+    machine stretcher(options.N_STRETCHER, maintenance_time[3][0], 50 * SECONDS_IN_MINUTE, 2.5 * SECONDS_IN_MINUTE, "Stretcher", &stretcher_worker, STRETCHER);
+    machines[STRETCHER] = &stretcher;
+    machine double_sided_sander(options.N_DOUBLE_SIDED_SANDER, maintenance_time[4][0], 10 * SECONDS_IN_MINUTE, 10, "Double sided sander", &double_sided_sander_worker, DOUBLE_SIDED_SANDER);
+    machines[DOUBLE_SIDED_SANDER] = &double_sided_sander;
+    machine oiling_machine(options.N_OILING, maintenance_time[5][0], 0, 2, "Oiling machine", &oiling_machine_worker, OILING_MACHINE);
+    machines[OILING_MACHINE] = &oiling_machine;
 
     random_device rand;       // a device that produces random numbers
     long seed_value = rand(); // get a random long number from the device rand
     RandomSeed(seed_value);
 
-    Init(0, SIMULATION_TIME); // time of simulation
+    Init(0, options.SIMULATION_DURATION); // time of simulation
     (new order_event)->Activate();
     (new supply_event)->Activate();
     (new maintenance_event)->Activate(Time + SECONDS_IN_HOUR * 8); // first maintenance after 8 hours not at the start of the simulation
     (new break_event)->Activate(Time + SECONDS_IN_HOUR * 2);       // first break after 2 hours not at the start of the simulation
     Run();
 
-    print_stats();
+    print_stats(options);
 
     return ErrCode(SUCCESS);
 }
