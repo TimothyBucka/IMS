@@ -26,7 +26,7 @@
 #define PIECE_AFTER_PRODUCTION_WEIGHT 0.25     // in kg
 #define MATERIAL_SUPPLY_WEIGHT 20000           // in kg. according to https://www.allabouttrucks-cdl.com/2019/08/how-many-tons-of-cargo-can-transport.html
 #define MATERIAL_WAREHOUSE_CAPACITY 50000      // in kg
-#define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 5000 // in kg
+#define INITIAL_MATERIAL_WAREHOUSE_WEIGHT 25000 // in kg
 
 // number amount constants
 #define ORDER_SIZE_MIN 1000  // in pieces
