@@ -59,7 +59,7 @@ bool material_warehouse::add_material(float amount) {
 }
 
 bool material_warehouse::use_material(float amount) {
-    if (amount > this->current) // chceck if the amount is not bigger than the capacity
+    if (amount > this->current) // check if the amount is not bigger than the capacity
     {
         return false;
     }
@@ -154,7 +154,6 @@ void palette::Behavior() {
     double packing_end_time = Time;
 
     if (this->palette_size == PALETTE_PIECES) {
-        cout << "Palette:" << (Time - this->startTime) / SECONDS_IN_HOUR << endl;
         palette_time((Time - this->startTime) / SECONDS_IN_HOUR); // only count duration for the palette of 2000 pieces
     }
 
@@ -239,8 +238,6 @@ void Order::Behavior() {
     }
 
     Passivate();
-
-    cout<<"Order:"<<(Time - start_time)/SECONDS_IN_HOUR<<","<<this->order_size<<endl;
 
     orders_done++;
     time_in_production_sum += (Time - start_time);
@@ -414,45 +411,45 @@ void supply_event::Behavior() {
 void help(const char *prog_name) {
     cout << prog_name << " program implements the SHO of the engineering company. Default simulation run is 365 days." << endl;
     cout << "Usage: " << prog_name << " [options]" << endl;
-    cout << "\t--help, -h              : prints help" <<endl;
-    cout << "\t<simulation_duration>   : simulation duration in days" << endl;
-    cout << "\t--duration, -d <days>   : simulation duration in days" << endl;
-    cout << "\t--experiment, -e <number 0-2> : run given experiment (with machine configuration)" << endl;
+    cout << "\t--help, -h                   : prints help" <<endl;
+    cout << "\t<simulation_duration>        : simulation duration in days" << endl;
+    cout << "\t--duration, -d <days>        : simulation duration in days" << endl;
+    cout << "\t--experiment, -e <number 0-2>: run given experiment (with machine configuration)" << endl;
     cout<< "\t\t0:" << endl;
-    cout << "\t\t\tPressing machine machines: 2" << endl;
-    cout << "\t\t\tOne sided sander machines: 3" << endl;
-    cout << "\t\t\tAligner machines: 2" << endl;
-    cout << "\t\t\tStretcher machines: 3" << endl;
+    cout << "\t\t\tPressing machine machines   : 2" << endl;
+    cout << "\t\t\tOne sided sander machines   : 3" << endl;
+    cout << "\t\t\tAligner machines            : 2" << endl;
+    cout << "\t\t\tStretcher machines          : 3" << endl;
     cout << "\t\t\tDouble sided sander machines: 2" << endl;
-    cout << "\t\t\tOiling machines: 1" << endl;
-    cout << "\t\t\tPacking workers: 10" << endl;
-    cout << "\t\t\tQuality controllers: 10" << endl;
+    cout << "\t\t\tOiling machines             : 1" << endl;
+    cout << "\t\t\tPacking workers             : 10" << endl;
+    cout << "\t\t\tQuality controllers         : 10" << endl;
     cout<< "\t\t1:" << endl;
-    cout << "\t\t\tPressing machine machines: 2" << endl;
-    cout << "\t\t\tOne sided sander machines: 4" << endl;
-    cout << "\t\t\tAligner machines: 3" << endl;
-    cout << "\t\t\tStretcher machines: 3" << endl;
+    cout << "\t\t\tPressing machine machines   : 2" << endl;
+    cout << "\t\t\tOne sided sander machines   : 4" << endl;
+    cout << "\t\t\tAligner machines            : 3" << endl;
+    cout << "\t\t\tStretcher machines          : 3" << endl;
     cout << "\t\t\tDouble sided sander machines: 3" << endl;
-    cout << "\t\t\tOiling machines: 1" << endl;
-    cout << "\t\t\tPacking workers: 10" << endl;
-    cout << "\t\t\tQuality controllers: 10" << endl;
+    cout << "\t\t\tOiling machines             : 1" << endl;
+    cout << "\t\t\tPacking workers             : 10" << endl;
+    cout << "\t\t\tQuality controllers         : 10" << endl;
     cout<< "\t\t2:" << endl;
-    cout << "\t\t\tPressing machine machines: 2" << endl;
-    cout << "\t\t\tOne sided sander machines: 5" << endl;
-    cout << "\t\t\tAligner machines: 4" << endl;
-    cout << "\t\t\tStretcher machines: 4" << endl;
+    cout << "\t\t\tPressing machine machines   : 2" << endl;
+    cout << "\t\t\tOne sided sander machines   : 5" << endl;
+    cout << "\t\t\tAligner machines            : 4" << endl;
+    cout << "\t\t\tStretcher machines          : 4" << endl;
     cout << "\t\t\tDouble sided sander machines: 4" << endl;
-    cout << "\t\t\tOiling machines: 2" << endl;
-    cout << "\t\t\tPacking workers: 10" << endl;
-    cout << "\t\t\tQuality controllers: 10" << endl;
-    cout << "\t--press <number>        : number of pressing machines" << endl;
-    cout << "\t--1_sided <number>    : number of one sided sander machines" << endl;
-    cout << "\t--align <number>      : number of aligner machines" << endl;
-    cout << "\t--stretch <number>    : number of stretcher machines" << endl;
-    cout << "\t--2_sided <number> : number of double sided sander machines" << endl;
-    cout << "\t--oil <number>       : number of oiling machines" << endl;
-    cout << "\t--pack <number>      : number of packing workers" << endl;
-    cout << "\t--quality <number>   : number of quality controllers" << endl;
+    cout << "\t\t\tOiling machines             : 2" << endl;
+    cout << "\t\t\tPacking workers             : 10" << endl;
+    cout << "\t\t\tQuality controllers         : 10" << endl;
+    cout << "\t--press <number>  : number of pressing machines" << endl;
+    cout << "\t--1_sided <number>: number of one sided sander machines" << endl;
+    cout << "\t--align <number>  : number of aligner machines" << endl;
+    cout << "\t--stretch <number>: number of stretcher machines" << endl;
+    cout << "\t--2_sided <number>: number of double sided sander machines" << endl;
+    cout << "\t--oil <number>    : number of oiling machines" << endl;
+    cout << "\t--pack <number>   : number of packing workers" << endl;
+    cout << "\t--quality <number>: number of quality controllers" << endl;
     cout << endl;
     cout << "Subject: IMS" << endl;
     cout << "Authors:  Timotej Bucka (xbucka00) " << endl;
