@@ -75,10 +75,6 @@ bool material_warehouse::use_material(float amount) {
 // ########################################### Simulation proccess for the production of the palettes of brake discs ###########################################
 
 void palette::Behavior() {
-    // cout << "Palette id: " << this->palette_id << endl;
-    // cout << "\tPalette size: " << this->palette_size << endl;
-    // cout << "\tStart time: " << this->startTime / SECONDS_IN_MINUTE << endl;
-
     this->startTime = Time;
     (new machine_work(machines[PRESSING_MACHINE], this))->Activate(); // PRESSING MACHINE
     Passivate();
@@ -143,7 +139,7 @@ void palette::Behavior() {
     double packing_start_time = Time;
     this->palette_done = 0;
     int package_id = 0; // package id
-    int PACKAGE_SIZE = 50;
+    int PACKAGE_SIZE = 40;
     for (int i = this->palette_size; i > 0; i -= PACKAGE_SIZE) {
         if (i < PACKAGE_SIZE) {
             PACKAGE_SIZE = i;
@@ -157,8 +153,10 @@ void palette::Behavior() {
     Passivate();
     double packing_end_time = Time;
 
-    if (this->palette_size == PALETTE_PIECES) // only count duration for the palette of 2000 pieces
-        palette_time((Time - this->startTime) / SECONDS_IN_HOUR);
+    if (this->palette_size == PALETTE_PIECES) {
+        cout << "Palette:" << (Time - this->startTime) / SECONDS_IN_HOUR << endl;
+        palette_time((Time - this->startTime) / SECONDS_IN_HOUR); // only count duration for the palette of 2000 pieces
+    }
 
     spent_in_rework_all += PIECE_REWORK_TIME * this->bad_pieces;
     pieces_to_rework_all += this->bad_pieces;
@@ -242,6 +240,8 @@ void Order::Behavior() {
     }
 
     Passivate();
+
+    cout<<"Order:"<<(Time - start_time)/SECONDS_IN_HOUR<<","<<this->order_size<<endl;
 
     orders_done++;
     time_in_production_sum += (Time - start_time);
@@ -399,7 +399,7 @@ void order_event::Behavior() {
 
 // ########################################### Generator for supplies ###########################################
 void supply_event::Behavior() {
-    double rnd_i = Normal(SECONDS_IN_DAY * 14, SECONDS_IN_HOUR * 2); // supply every 14 days (normal)
+    double rnd_i = Normal(SECONDS_IN_DAY * 12, SECONDS_IN_HOUR * 2); // supply every 14 days (normal)
     if (rnd_i > 0)
         Activate(Time + rnd_i);
     else
@@ -503,7 +503,6 @@ void print_stats(ProgramOptions &options) {
     cout << "Packing: " << endl;
     cout << "------------------------------------------------------------"<<endl;
     cout << "Number of packing workers: " << workers[PACKING]->get_n_workers() << endl;
-    cout << "Packing queue: " << endl;
     cout << "Average time spent in packing: " << (palettes_done ? spent_in_packing / palettes_done / SECONDS_IN_MINUTE : 0) << " minutes" << endl;
 
     cout << endl;
