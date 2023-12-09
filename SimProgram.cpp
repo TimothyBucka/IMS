@@ -234,7 +234,6 @@ void Order::Behavior() {
             }
         }
     } else {
-        // TODO: not enough material maybe the return is worng
         not_enough_material++;
         return;
     }
@@ -387,23 +386,23 @@ void break_event::Behavior() {
 
 // ########################################### Generator for new orders ###########################################
 void order_event::Behavior() {
-    double rnd_i = Exponential(SECONDS_IN_HOUR * 42); // order every 42 hours (exponential)
+    double rnd_i = Exponential(SECONDS_IN_HOUR * 8); // order every 8 hours (exponential)
 
     if (rnd_i > 0)
         Activate(Time + rnd_i);
     else
-        Activate(Time + SECONDS_IN_HOUR * 42);
+        Activate(Time + SECONDS_IN_HOUR * 8);
 
     (new Order)->Activate();
 }
 
 // ########################################### Generator for supplies ###########################################
 void supply_event::Behavior() {
-    double rnd_i = Normal(SECONDS_IN_DAY * 12, SECONDS_IN_HOUR * 2); // supply every 14 days (normal)
+    double rnd_i = Normal(SECONDS_IN_DAY * 2, SECONDS_IN_HOUR * 2); // supply every 2 days (normal)
     if (rnd_i > 0)
         Activate(Time + rnd_i);
     else
-        Activate(Time + SECONDS_IN_DAY * 14);
+        Activate(Time + SECONDS_IN_DAY * 2);
 
     (new Supply)->Activate();
 }
@@ -419,16 +418,7 @@ void help(const char *prog_name) {
     cout << "\t<simulation_duration>   : simulation duration in days" << endl;
     cout << "\t--duration, -d <days>   : simulation duration in days" << endl;
     cout << "\t--experiment, -e <number 0-2> : run given experiment (with machine configuration)" << endl;
-    cout << "\t\t0:" << endl;
-    cout << "\t\t\tPressing machine machines: 1" << endl;
-    cout << "\t\t\tOne sided sander machines: 1" << endl;
-    cout << "\t\t\tAligner machines: 1" << endl;
-    cout << "\t\t\tStretcher machines: 1" << endl;
-    cout << "\t\t\tDouble sided sander machines: 1" << endl;
-    cout << "\t\t\tOiling machines: 1" << endl;
-    cout << "\t\t\tPacking workers: 10" << endl;
-    cout << "\t\t\tQuality controllers: 10" << endl;
-    cout<< "\t\t1:" << endl;
+    cout<< "\t\t0:" << endl;
     cout << "\t\t\tPressing machine machines: 2" << endl;
     cout << "\t\t\tOne sided sander machines: 3" << endl;
     cout << "\t\t\tAligner machines: 2" << endl;
@@ -437,13 +427,22 @@ void help(const char *prog_name) {
     cout << "\t\t\tOiling machines: 1" << endl;
     cout << "\t\t\tPacking workers: 10" << endl;
     cout << "\t\t\tQuality controllers: 10" << endl;
-    cout<< "\t\t2:" << endl;
+    cout<< "\t\t1:" << endl;
     cout << "\t\t\tPressing machine machines: 2" << endl;
     cout << "\t\t\tOne sided sander machines: 4" << endl;
     cout << "\t\t\tAligner machines: 3" << endl;
     cout << "\t\t\tStretcher machines: 3" << endl;
     cout << "\t\t\tDouble sided sander machines: 3" << endl;
     cout << "\t\t\tOiling machines: 1" << endl;
+    cout << "\t\t\tPacking workers: 10" << endl;
+    cout << "\t\t\tQuality controllers: 10" << endl;
+    cout<< "\t\t2:" << endl;
+    cout << "\t\t\tPressing machine machines: 2" << endl;
+    cout << "\t\t\tOne sided sander machines: 5" << endl;
+    cout << "\t\t\tAligner machines: 4" << endl;
+    cout << "\t\t\tStretcher machines: 4" << endl;
+    cout << "\t\t\tDouble sided sander machines: 4" << endl;
+    cout << "\t\t\tOiling machines: 2" << endl;
     cout << "\t\t\tPacking workers: 10" << endl;
     cout << "\t\t\tQuality controllers: 10" << endl;
     cout << "\t--press <number>        : number of pressing machines" << endl;
@@ -673,22 +672,22 @@ bool parse_args(int argc, char *argv[], ProgramOptions &options) {
     {
     case 1:
         options.N_PRESSING = options.press ? options.N_PRESSING : 2;
-        options.N_ONE_SIDED_SANDER = options.one_sided ? options.N_ONE_SIDED_SANDER : 3;
-        options.N_ALIGNER = options.align ? options.N_ALIGNER : 2;
-        options.N_STRETCHER = options.stretch ? options.N_STRETCHER : 3;
-        options.N_DOUBLE_SIDED_SANDER = options.double_sided ? options.N_DOUBLE_SIDED_SANDER : 2;
-        options.N_OILING = options.oil ? options.N_OILING : 1;
-        options.N_PACKING_WORKERS = options.pack ? options.N_PACKING_WORKERS : 10;
-        options.N_QUALITY_CONTROLLERS = options.quality ? options.N_QUALITY_CONTROLLERS : 10;
-        break;
-    
-    case 2:
-        options.N_PRESSING = options.press ? options.N_PRESSING : 2;
         options.N_ONE_SIDED_SANDER = options.one_sided ? options.N_ONE_SIDED_SANDER : 4;
         options.N_ALIGNER = options.align ? options.N_ALIGNER : 3;
         options.N_STRETCHER = options.stretch ? options.N_STRETCHER : 3;
         options.N_DOUBLE_SIDED_SANDER = options.double_sided ? options.N_DOUBLE_SIDED_SANDER : 3;
         options.N_OILING = options.oil ? options.N_OILING : 1;
+        options.N_PACKING_WORKERS = options.pack ? options.N_PACKING_WORKERS : 10;
+        options.N_QUALITY_CONTROLLERS = options.quality ? options.N_QUALITY_CONTROLLERS : 10;
+        break;
+
+    case 2:
+        options.N_PRESSING = options.press ? options.N_PRESSING : 2;
+        options.N_ONE_SIDED_SANDER = options.one_sided ? options.N_ONE_SIDED_SANDER : 5;
+        options.N_ALIGNER = options.align ? options.N_ALIGNER : 4;
+        options.N_STRETCHER = options.stretch ? options.N_STRETCHER : 4;
+        options.N_DOUBLE_SIDED_SANDER = options.double_sided ? options.N_DOUBLE_SIDED_SANDER : 4;
+        options.N_OILING = options.oil ? options.N_OILING : 2;
         options.N_PACKING_WORKERS = options.pack ? options.N_PACKING_WORKERS : 10;
         options.N_QUALITY_CONTROLLERS = options.quality ? options.N_QUALITY_CONTROLLERS : 10;
         break;
